@@ -9,5 +9,7 @@
     <string name="time_zero">game</string>
     <string name="status_up">強化!</string>
     <string name="select_stage">ステージ選択</string>
+    <string name="title_activity_battle">BattleActivity</string>
+    <string name="title_activity_result">ResultActivity</string>
 
 </resources>
