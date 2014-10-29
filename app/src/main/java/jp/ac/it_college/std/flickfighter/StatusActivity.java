@@ -12,21 +12,21 @@ import android.view.View;
 public class StatusActivity extends Activity{
 
     //プレイヤーのステータスを取得
-    SharedPreferences getPlayerStatus = getSharedPreferences("player_status", MODE_PRIVATE);
+    /*SharedPreferences getPlayerStatus = getSharedPreferences("player_status", MODE_PRIVATE);
     int attack = getPlayerStatus.getInt("attack",1);
     int defense = getPlayerStatus.getInt("defence",0);
     int life = getPlayerStatus.getInt("life",3);
     int point = getPlayerStatus.getInt("point",0);
-
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("attack", Integer.toString(attack));
+//        Log.v("attack", Integer.toString(attack));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
     }
 
     public void upGrade(String status_name, int status_point){
-        if (point >= 5){
+        /*if (point >= 5){
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setTitle("確認");
             alertDialog.setMessage("ポイントを５消費しますがよろしいですか？");
@@ -45,7 +45,7 @@ public class StatusActivity extends Activity{
             });
         }else{
 
-        }
+        }*/
     }
 
     public void stageSelect(View v){
