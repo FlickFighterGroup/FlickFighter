@@ -1,55 +1,66 @@
 package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
-public class StatusActivity extends Activity{
+public class StatusActivity extends Activity implements View.OnClickListener{
+    private SharedPreferences playerStatus;
+    private static final String ATTACK = "attackLevel";
+    private static final String DEFENCE = "defenceLevel";
+    private static final String LIFE = "lifeLevel";
 
-    //プレイヤーのステータスを取得
-    /*SharedPreferences getPlayerStatus = getSharedPreferences("player_status", MODE_PRIVATE);
-    int attack = getPlayerStatus.getInt("attack",1);
-    int defense = getPlayerStatus.getInt("defence",0);
-    int life = getPlayerStatus.getInt("life",3);
-    int point = getPlayerStatus.getInt("point",0);
-*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Log.v("attack", Integer.toString(attack));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
-    }
+        findViewById(R.id.button_levelUp_attack).setOnClickListener(this);
+        findViewById(R.id.button_levelUp_defence).setOnClickListener(this);
+        findViewById(R.id.button_levelUp_life).setOnClickListener(this);
 
-    public void upGrade(String status_name, int status_point){
-        /*if (point >= 5){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            alertDialog.setTitle("確認");
-            alertDialog.setMessage("ポイントを５消費しますがよろしいですか？");
-
-            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-
-            alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-        }else{
-
-        }*/
+        playerStatus = getSharedPreferences("status", MODE_PRIVATE);
+        statusDisplay(); //ステータスの状態を表示
     }
 
     public void stageSelect(View v){
         Intent intent = new Intent(this, StageSelectActivity.class);
         startActivity(intent);
+    }
+
+    private void levelUp(String statusName) {
+        //プリファレンスに保存されている各ステータス値を加算
+        SharedPreferences.Editor editor = playerStatus.edit();
+        editor.putInt(statusName, playerStatus.getInt(statusName, 0) + 1)
+                .apply();
+
+        statusDisplay();
+    }
+
+    private void statusDisplay(){
+        ((TextView)findViewById(R.id.status_attack_level))
+                .setText(String.valueOf("Lv." + playerStatus.getInt(ATTACK, 0)));
+        ((TextView)findViewById(R.id.status_defence_level))
+                .setText(String.valueOf("Lv." + playerStatus.getInt(DEFENCE, 0)));
+        ((TextView)findViewById(R.id.status_life_level))
+                .setText(String.valueOf("Lv." + playerStatus.getInt(LIFE, 0)));
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button_levelUp_attack:
+                levelUp(ATTACK);
+                break;
+            case R.id.button_levelUp_defence:
+                levelUp(DEFENCE);
+                break;
+            case R.id.button_levelUp_life:
+                levelUp(LIFE);
+                break;
+        }
     }
 }
