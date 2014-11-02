@@ -22,7 +22,7 @@ public class BattleActivity extends Activity {
         setContentView(R.layout.activity_battle);
     }
 
-    public void gotoResult(View view){
+    public void goToResult(View view){
         Intent intent = new Intent(this, ResultActivity.class);
         startActivity(intent);
     }
