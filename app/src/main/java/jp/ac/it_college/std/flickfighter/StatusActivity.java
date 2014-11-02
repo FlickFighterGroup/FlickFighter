@@ -28,7 +28,7 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         statusDisplay(); //ステータスの状態を表示
     }
 
-    public void stageSelect(View v){
+    public void goToStageSelect(View v){
         Intent intent = new Intent(this, StageSelectActivity.class);
         startActivity(intent);
     }

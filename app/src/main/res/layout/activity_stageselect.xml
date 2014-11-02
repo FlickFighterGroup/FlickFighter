@@ -1,19 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="gotoBattle"
     >
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="StageSelect"
-        android:textSize="30dp"
-        android:gravity="center"
-        />
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage1"
+                android:text="STAGE 1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage2"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage3"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage4"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage5"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage6"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage7"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage8"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage9"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="stageSelect"
+                android:id="@+id/button_stage10"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="STAGE 10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
