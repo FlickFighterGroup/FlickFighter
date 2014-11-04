@@ -30,11 +30,21 @@
         </activity>
         <activity
             android:name=".BattleActivity"
+<<<<<<< HEAD
             android:label="@string/title_activity_battle" >
         </activity>
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result" >
+=======
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ResultActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+>>>>>>> 7726aed... labelの値をapp_nameに変更
 
         </activity>
     </application>
