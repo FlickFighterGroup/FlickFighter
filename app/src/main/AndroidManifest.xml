@@ -6,10 +6,13 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Light.NoTitleBar"
+        >
         <activity
             android:name=".TitleActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,23 +21,28 @@
         </activity>
         <activity
             android:name=".StatusActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".UpGradeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".StageSelectActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".BattleActivity"
-            android:label="@string/title_activity_battle" >
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".ResultActivity"
-            android:label="@string/title_activity_result" >
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" >
 
         </activity>
     </application>
