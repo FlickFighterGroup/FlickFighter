@@ -8,13 +8,11 @@ import android.view.WindowManager;
 
 
 public class BattleActivity extends Activity {
-    public String[] StringArray = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        initGame();
         setContentView(R.layout.activity_battle);
     }
 
@@ -23,11 +21,4 @@ public class BattleActivity extends Activity {
         startActivity(intent);
     }
 
-    public void initGame(){
-        StringArray[0] = "あ";
-    }
-
-    public void judge(){
-
-    }
 }
