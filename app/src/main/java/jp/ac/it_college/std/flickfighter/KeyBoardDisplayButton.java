@@ -7,9 +7,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 public class KeyBoardDisplayButton extends Button {
-    public KeyBoardDisplayButton(Context context) {
-        super(context);
-    }
 
     public KeyBoardDisplayButton(Context context, AttributeSet attrs) {
         super(context, attrs);
