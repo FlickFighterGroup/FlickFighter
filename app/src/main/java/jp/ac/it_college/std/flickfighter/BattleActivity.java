@@ -4,22 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 
 public class BattleActivity extends Activity {
-    public String[] StringArray = new String[1];
+    InputMethodManager inputMethodManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        initGame();
-        setContentView(R.layout.activity_battle);
+        setContentView(new BattleLayout(this, null));
+
+        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     public void goToResult(View view){
@@ -27,11 +24,7 @@ public class BattleActivity extends Activity {
         startActivity(intent);
     }
 
-    public void initGame(){
-        StringArray[0] = "あ";
-    }
-
-    public void judge(){
-
+    public void keyBoardShown(View view) {
+        inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 }
