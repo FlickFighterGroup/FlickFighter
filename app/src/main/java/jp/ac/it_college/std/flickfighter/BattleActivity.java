@@ -15,7 +15,7 @@ public class BattleActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new BattleLayout(this, null));
+        setContentView(R.layout.activity_battle);
         randomStringView();
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     }
