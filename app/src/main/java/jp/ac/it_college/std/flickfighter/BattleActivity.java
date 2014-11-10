@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-
 
 
 public class BattleActivity extends Activity {
@@ -35,5 +36,18 @@ public class BattleActivity extends Activity {
         TextView textView = (TextView) findViewById(R.id.enemyString);
         textView.setText(WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID)));
 
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            return super.dispatchKeyEvent(event);
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+            //Judge
+        }
+
+        return true;
     }
 }
