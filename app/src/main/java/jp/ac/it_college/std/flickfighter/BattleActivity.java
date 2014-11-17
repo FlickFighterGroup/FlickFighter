@@ -5,27 +5,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class BattleActivity extends Activity {
+public class BattleActivity extends Activity implements TextWatcher{
     InputMethodManager inputMethodManager;
     TextView enemyString;
     EditText userInputText;
+    String TAG = "BattleActivity";
+    String beforeString = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
         randomStringView();
+        beforeString = "";
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
+        userInputText.addTextChangedListener(this);
     }
 
     public void goToResult(View view){
@@ -44,29 +50,40 @@ public class BattleActivity extends Activity {
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                //Enterキーが押された時に文字列を判定する
-                charJudge(enemyString, userInputText);
-            }
-            return true;
-        }
-
-        return super.dispatchKeyEvent(event);
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        Log.d(TAG, "beforeTextChanged() s:" + s.toString() +
+                " start:" + String.valueOf(start) + " count:" + String.valueOf(count) +
+                " after:" + String.valueOf(after));
     }
 
-    private void charJudge(TextView enemyChar, EditText userText) {
-        if (enemyChar.getText().length() != userText.getText().length()
-                || !enemyChar.getText().toString().equals(userText.getText().toString())) {
-            //文字の長さと文字が一致しない場合
-            Log.v("charJudge", String.valueOf(false));
-            userText.setTextColor(Color.RED);
-            return;
-        }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        Log.d(TAG, "onTextChanged() s:" + s.toString() +
+                " start:" + String.valueOf(start) + " before:" + String.valueOf(before) +
+                " count:" + String.valueOf(count));
 
-        //文字が一致した場合
-        Log.v("charJudge", String.valueOf(true));
-        userText.setTextColor(Color.GREEN);
+        if (enemyString.getText().toString().substring(0,s.length()).equals(s.toString())) {
+            Log.d("judge", String.valueOf(true));
+            if (enemyString.getText().length() == s.length()) {
+                //文字を切り替える
+                userInputText.setText("");
+                randomStringView();
+            } else {
+                //文字列が一致すれば色を変える
+                userInputText.setTextColor(Color.GREEN);
+                beforeString = s.toString();
+            }
+        } else {
+            //間違っていれば文字列を戻す
+            Log.d("judge", String.valueOf(false));
+            userInputText.setText(beforeString);
+            userInputText.requestFocus();
+            userInputText.setSelection(beforeString.length());
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        Log.d(TAG, "afterTextChanged()");
     }
 }
