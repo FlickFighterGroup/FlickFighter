@@ -4,13 +4,30 @@
     android:onClick="goToResult"
     android:orientation="vertical">
 
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:src="@drawable/flick_background"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="120dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/zako1"
+        />
+
     <EditText
         android:id="@+id/userInputText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:gravity="center"
         android:textSize="30dp"
+        android:textColor="#0000FF"
+        android:layout_marginTop="100dp"
         android:singleLine="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -20,9 +37,11 @@
         android:id="@+id/enemyString"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#0000FF"
         android:layout_below="@id/userInputText"
         android:gravity="center"
         android:textSize="30dp" />
+
 
     <Button
         android:id="@+id/keyBoardShownButton"
