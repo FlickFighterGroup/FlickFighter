@@ -1,25 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:onClick="goToResult">
+    android:onClick="goToResult"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/userInputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="#00000000" />
 
     <TextView
+        android:id="@+id/enemyString"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="あああ"
-        android:textSize="30dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userInputText"
         android:gravity="center"
-        />
+        android:textSize="30dp" />
 
-   <Button
-       android:id="@+id/keyBoardShownButton"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="キーボードを表示"
-       android:onClick="keyBoardShown"
-       android:visibility="gone"
-       />
+    <Button
+        android:id="@+id/keyBoardShownButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="keyBoardShown"
+        android:text="キーボードを表示" />
 
-</LinearLayout>
+</RelativeLayout>
