@@ -13,6 +13,7 @@
         />
 
     <ImageView
+        android:id="@+id/enemy_image"
         android:layout_width="wrap_content"
         android:layout_height="150dp"
         android:layout_marginTop="120dp"
@@ -41,6 +42,13 @@
         android:layout_below="@id/userInputText"
         android:gravity="center"
         android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/button_debug_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="animation"
+        />
 
 
     <Button
