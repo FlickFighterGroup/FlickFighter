@@ -26,12 +26,12 @@ public class BattleActivity extends Activity implements TextWatcher{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
-        randomStringView();
         beforeString = "";
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+        randomStringView();
     }
 
     public void goToResult(View view){
@@ -45,8 +45,7 @@ public class BattleActivity extends Activity implements TextWatcher{
 
     public void randomStringView(){
         //敵の文字列を表示
-        TextView textView = (TextView) findViewById(R.id.enemyString);
-        textView.setText(WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID)));
+        enemyString.setText(WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID)));
     }
 
     @Override
@@ -86,4 +85,6 @@ public class BattleActivity extends Activity implements TextWatcher{
     public void afterTextChanged(Editable s) {
         Log.d(TAG, "afterTextChanged()");
     }
+
+
 }
