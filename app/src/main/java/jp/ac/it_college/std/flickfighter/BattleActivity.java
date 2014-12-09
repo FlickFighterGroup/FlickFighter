@@ -18,11 +18,11 @@ import android.widget.TextView;
 
 
 public class BattleActivity extends Activity implements TextWatcher{
-    InputMethodManager inputMethodManager;
-    TextView enemyString;
-    EditText userInputText;
-    String TAG = "BattleActivity";
-    String beforeString = "";
+    private InputMethodManager inputMethodManager;
+    private TextView enemyString;
+    private EditText userInputText;
+    private String TAG = "BattleActivity";
+    private String beforeString = "";
 
 
     @Override
