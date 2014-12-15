@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ public class BattleActivity extends Activity implements TextWatcher{
     EditText userInputText;
     String TAG = "BattleActivity";
     String beforeString = "";
+    String text;
 
 
     @Override
@@ -46,7 +48,8 @@ public class BattleActivity extends Activity implements TextWatcher{
     public void randomStringView(){
         //敵の文字列を表示
         TextView textView = (TextView) findViewById(R.id.enemyString);
-        textView.setText(WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID)));
+        text = WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID));
+        textView.setText(text);
     }
 
     @Override
@@ -70,8 +73,10 @@ public class BattleActivity extends Activity implements TextWatcher{
                 randomStringView();
             } else {
                 //文字列が一致すれば色を変える
-                userInputText.setTextColor(Color.GREEN);
-                beforeString = s.toString();
+
+                enemyString = (TextView)findViewById(R.id.enemyString);
+                String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) + "</font>" + text.substring(s.length(), text.length()) ;
+                enemyString.setText(Html.fromHtml(txtStr));
             }
         } else {
             //間違っていれば文字列を戻す
