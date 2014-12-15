@@ -10,18 +10,21 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class BattleActivity extends Activity implements TextWatcher{
-    InputMethodManager inputMethodManager;
-    TextView enemyString;
-    EditText userInputText;
-    String TAG = "BattleActivity";
-    String beforeString = "";
-    String text;
+    private InputMethodManager inputMethodManager;
+    private TextView enemyString;
+    private EditText userInputText;
+    private String TAG = "BattleActivity";
+    private String beforeString = "";
+    private String text;
 
 
     @Override
@@ -52,6 +55,16 @@ public class BattleActivity extends Activity implements TextWatcher{
         textView.setText(text);
     }
 
+    public void enemyAnimation(View view){
+        ScaleAnimation animation = new ScaleAnimation(
+                1,2,1,2,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(100);
+        ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        enemyImage.startAnimation(animation);
+    }
+
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         Log.d(TAG, "beforeTextChanged() s:" + s.toString() +
@@ -73,7 +86,7 @@ public class BattleActivity extends Activity implements TextWatcher{
                 randomStringView();
             } else {
                 //文字列が一致すれば色を変える
-
+                beforeString = s.toString();
                 enemyString = (TextView)findViewById(R.id.enemyString);
                 String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) + "</font>" + text.substring(s.length(), text.length()) ;
                 enemyString.setText(Html.fromHtml(txtStr));
