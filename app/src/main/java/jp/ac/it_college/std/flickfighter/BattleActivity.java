@@ -52,6 +52,7 @@ public class BattleActivity extends Activity implements TextWatcher{
         textView.setText(text);
     }
 
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         Log.d(TAG, "beforeTextChanged() s:" + s.toString() +
@@ -73,7 +74,7 @@ public class BattleActivity extends Activity implements TextWatcher{
                 randomStringView();
             } else {
                 //文字列が一致すれば色を変える
-
+                beforeString = s.toString();
                 enemyString = (TextView)findViewById(R.id.enemyString);
                 String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) + "</font>" + text.substring(s.length(), text.length()) ;
                 enemyString.setText(Html.fromHtml(txtStr));
