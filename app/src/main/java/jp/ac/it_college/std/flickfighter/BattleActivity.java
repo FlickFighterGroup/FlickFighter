@@ -10,8 +10,11 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -50,6 +53,15 @@ public class BattleActivity extends Activity implements TextWatcher{
         TextView textView = (TextView) findViewById(R.id.enemyString);
         text = WordBook.randomWordView(getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID));
         textView.setText(text);
+    }
+
+    public void enemyAnimation(View view){
+        ScaleAnimation animation = new ScaleAnimation(
+                1,2,1,2,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(100);
+        ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        enemyImage.startAnimation(animation);
     }
 
 
