@@ -3,12 +3,12 @@ package jp.ac.it_college.std.flickfighter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -18,14 +18,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class BattleActivity extends Activity implements TextWatcher{
+public class BattleActivity extends Activity
+        implements TextWatcher, LimitTimeSurfaceView.EnemyAttackListener{
     private InputMethodManager inputMethodManager;
     private TextView enemyString;
     private EditText userInputText;
     private String TAG = "BattleActivity";
     private String beforeString = "";
     private String text;
-
+    private LimitTimeSurfaceView limitTimeSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class BattleActivity extends Activity implements TextWatcher{
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+        SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
+        limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, this);
     }
 
     public void goToResult(View view){
@@ -87,7 +90,6 @@ public class BattleActivity extends Activity implements TextWatcher{
             } else {
                 //文字列が一致すれば色を変える
                 beforeString = s.toString();
-                enemyString = (TextView)findViewById(R.id.enemyString);
                 String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) + "</font>" + text.substring(s.length(), text.length()) ;
                 enemyString.setText(Html.fromHtml(txtStr));
             }
@@ -103,5 +105,10 @@ public class BattleActivity extends Activity implements TextWatcher{
     @Override
     public void afterTextChanged(Editable s) {
         Log.d(TAG, "afterTextChanged()");
+    }
+
+    @Override
+    public void enemyAttack() {
+
     }
 }
