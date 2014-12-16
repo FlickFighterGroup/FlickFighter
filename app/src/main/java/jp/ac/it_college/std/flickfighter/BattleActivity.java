@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -40,6 +41,16 @@ public class BattleActivity extends Activity
         userInputText.addTextChangedListener(this);
         SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
         limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, this);
+
+        //アニメーションデバッグ用ボタン
+        findViewById(R.id.button_debug_animation)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        enemyAnimation(
+                                (ImageView)findViewById(R.id.enemy_image));
+                    }
+                });
     }
 
     public void goToResult(View view){
@@ -58,13 +69,13 @@ public class BattleActivity extends Activity
         textView.setText(text);
     }
 
-    public void enemyAnimation(View view){
+    public void enemyAnimation(ImageView view){
         ScaleAnimation animation = new ScaleAnimation(
                 1,2,1,2,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setDuration(100);
-        ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
-        enemyImage.startAnimation(animation);
+
+        view.startAnimation(animation);
     }
 
 
@@ -109,6 +120,12 @@ public class BattleActivity extends Activity
 
     @Override
     public void enemyAttack() {
-
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                enemyAnimation(
+                        (ImageView) findViewById(R.id.enemy_image));
+            }
+        });
     }
 }
