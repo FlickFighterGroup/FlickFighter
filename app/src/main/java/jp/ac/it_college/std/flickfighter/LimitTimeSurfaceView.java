@@ -44,6 +44,10 @@ public class LimitTimeSurfaceView
         while (mThread.isAlive());
     }
 
+    public void resetLimitTime() {
+        limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
+    }
+
     @Override
     public void run() {
         //TODO カウントダウンしてバーを表示する処理

@@ -98,6 +98,8 @@ public class BattleActivity extends Activity
                 //文字を切り替える
                 userInputText.setText("");
                 randomStringView();
+                // リミットタイムをリセットする
+                limitTimeSurfaceView.resetLimitTime();
             } else {
                 //文字列が一致すれば色を変える
                 beforeString = s.toString();
