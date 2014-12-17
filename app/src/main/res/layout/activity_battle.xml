@@ -25,8 +25,9 @@
     <SurfaceView
         android:id="@+id/limit_time_bar"
         android:layout_width="150dp"
-        android:layout_height="30dp"
+        android:layout_height="10dp"
         android:layout_below="@id/enemy_image"
+        android:background="#00FF00"
         android:layout_centerHorizontal="true"
         />
 
