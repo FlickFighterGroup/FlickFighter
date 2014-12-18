@@ -3,7 +3,6 @@ package jp.ac.it_college.std.flickfighter;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,6 +13,7 @@ public class LimitTimeSurfaceView
     private SurfaceHolder mHolder;
     private Thread mThread;
     private boolean mIsAlive = false;
+    private boolean mMeasurement = false;
     private static final float DEFAULT_LIMIT_TIME_BAR_SIZE = 1.0f;
     private static final float DEFAULT_DECREMENT = 0.005f;
     private float limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
@@ -44,6 +44,14 @@ public class LimitTimeSurfaceView
         while (mThread.isAlive());
     }
 
+    public void startMeasurement (){
+        mMeasurement = true;
+    }
+
+    public void stopMeasurement() {
+        mMeasurement = false;
+    }
+
     public void resetLimitTime() {
         limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
     }
@@ -53,26 +61,28 @@ public class LimitTimeSurfaceView
         //TODO カウントダウンしてバーを表示する処理
         try {
             while (mIsAlive) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (mMeasurement) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Canvas canvas = mHolder.lockCanvas();
+                    drawCanvas();
+
+                    if (limitTime <= 0) {
+                        listener.enemyAttack();
+                        limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
+                    }
+
+                    mHolder.unlockCanvasAndPost(canvas);
                 }
-
-                Canvas canvas = mHolder.lockCanvas();
-                drawCanvas();
-
-                if (limitTime <= 0) {
-                    listener.enemyAttack();
-                    limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
-                }
-
-                mHolder.unlockCanvasAndPost(canvas);
             }
         } catch (NullPointerException e) {
-            Log.e("LimitTimeSurfaceView", "error", e);
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            Log.e("LimitTimeSurfaceView", "error", e);
+            e.printStackTrace();
         }
     }
 

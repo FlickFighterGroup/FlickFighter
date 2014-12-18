@@ -16,6 +16,7 @@ import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -33,14 +34,18 @@ public class BattleActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
-        randomStringView();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
+        limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, this);
         beforeString = "";
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
-        SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
-        limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, this);
 
         //アニメーションデバッグ用ボタン
         findViewById(R.id.button_debug_animation)
@@ -51,6 +56,17 @@ public class BattleActivity extends Activity
                                 (ImageView)findViewById(R.id.enemy_image));
                     }
                 });
+
+        randomStringView();
+        gameStart();
+    }
+
+    public void gameStart() {
+        limitTimeSurfaceView.startMeasurement();
+    }
+
+    public void gameEnd() {
+        limitTimeSurfaceView.stopMeasurement();
     }
 
     public void goToResult(View view){
