@@ -69,7 +69,7 @@ public class LimitTimeSurfaceView
                     }
 
                     Canvas canvas = mHolder.lockCanvas();
-                    drawCanvas();
+                    drawLimitTime();
 
                     if (limitTime <= 0) {
                         listener.enemyAttack();
@@ -86,7 +86,7 @@ public class LimitTimeSurfaceView
         }
     }
 
-    private void drawCanvas() {
+    private void drawLimitTime() {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
