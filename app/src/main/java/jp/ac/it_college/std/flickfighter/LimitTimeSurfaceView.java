@@ -85,7 +85,7 @@ public class LimitTimeSurfaceView
         });
     }
 
-    public static interface EnemyAttackListener {
+    public interface EnemyAttackListener {
         //リミットタイムが0になれば呼び出す
         void enemyAttack();
     }
