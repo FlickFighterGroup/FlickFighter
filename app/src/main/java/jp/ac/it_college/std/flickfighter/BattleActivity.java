@@ -66,7 +66,7 @@ public class BattleActivity extends Activity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            gameEnd();
+            gameStop();
 
             new AlertDialog.Builder(this)
                     .setTitle("確認")
@@ -94,7 +94,7 @@ public class BattleActivity extends Activity
         limitTimeSurfaceView.startMeasurement();
     }
 
-    public void gameEnd() {
+    public void gameStop() {
         limitTimeSurfaceView.stopMeasurement();
     }
 
