@@ -2,10 +2,8 @@ package jp.ac.it_college.std.flickfighter;
 
 import java.util.Random;
 
-class WordBook {
-    public WordBook(){
+public class WordBook {
 
-    }
     public static String[][] wordBook(){
         String[][] word = new String[10][];
         word[0] = new String[]{"あうあう","あいあい","あい","あああ","いえ","いう","おいえ","おういえ","おい","あお","ええ","えい","ういお","おう","えいえいおー"};
