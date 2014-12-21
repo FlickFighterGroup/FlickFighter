@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 
 public class BattleActivity extends Activity
-        implements TextWatcher, LimitTimeSurfaceView.EnemyAttackListener{
+        implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener {
     private InputMethodManager inputMethodManager;
     private TextView enemyString;
     private EditText userInputText;

@@ -9,7 +9,7 @@ import android.view.SurfaceView;
 public class LimitTimeSurfaceView
         implements SurfaceHolder.Callback, Runnable {
 
-    private EnemyAttackListener listener;
+    private EnemyActionListener listener;
     private SurfaceHolder mHolder;
     private Thread mThread;
     private boolean mIsAlive = false;
@@ -19,7 +19,7 @@ public class LimitTimeSurfaceView
     private float limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
     private SurfaceView surfaceView;
 
-    public LimitTimeSurfaceView(SurfaceView surfaceView, EnemyAttackListener listener) {
+    public LimitTimeSurfaceView(SurfaceView surfaceView, EnemyActionListener listener) {
         this.surfaceView = surfaceView;
         this.listener = listener;
         mHolder = surfaceView.getHolder();
@@ -95,7 +95,7 @@ public class LimitTimeSurfaceView
         });
     }
 
-    public interface EnemyAttackListener {
+    public interface EnemyActionListener {
         //リミットタイムが0になれば呼び出す
         void enemyAttack();
     }
