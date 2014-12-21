@@ -37,6 +37,7 @@ public class BattleActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
+        randomStringView();
     }
 
     @Override
@@ -56,12 +57,9 @@ public class BattleActivity extends Activity
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        enemyAnimation(
-                                (ImageView)findViewById(R.id.enemy_image));
+                        enemyAnimation((ImageView)findViewById(R.id.enemy_image));
                     }
                 });
-
-        randomStringView();
     }
 
     @Override
