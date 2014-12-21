@@ -60,7 +60,19 @@ public class BattleActivity extends Activity
                 });
 
         randomStringView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        limitTimeSurfaceView.resetLimitTime();
         gameStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gameStop();
     }
 
     @Override
