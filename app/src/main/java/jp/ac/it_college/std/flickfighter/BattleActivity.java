@@ -31,6 +31,7 @@ public class BattleActivity extends Activity
     private String beforeString = "";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,9 @@ public class BattleActivity extends Activity
     @Override
     protected void onStart() {
         super.onStart();
+        mHandler = new Handler(getMainLooper());
         SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
-        limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, this);
+        limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, mHandler, this);
         beforeString = "";
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
@@ -179,11 +181,10 @@ public class BattleActivity extends Activity
 
     @Override
     public void enemyAttack() {
-        new Handler(getMainLooper()).post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                enemyAnimation(
-                        (ImageView) findViewById(R.id.enemy_image));
+                enemyAnimation((ImageView) findViewById(R.id.enemy_image));
             }
         });
     }

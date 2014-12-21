@@ -18,12 +18,14 @@ public class LimitTimeSurfaceView
     private static final float DEFAULT_DECREMENT = 0.005f;
     private float limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
     private SurfaceView surfaceView;
+    private Handler mHandler;
 
-    public LimitTimeSurfaceView(SurfaceView surfaceView, EnemyActionListener listener) {
+    public LimitTimeSurfaceView(SurfaceView surfaceView, Handler handler, EnemyActionListener listener) {
         this.surfaceView = surfaceView;
         this.listener = listener;
         mHolder = surfaceView.getHolder();
         mHolder.addCallback(this);
+        mHandler = handler;
     }
 
     @Override
@@ -87,7 +89,7 @@ public class LimitTimeSurfaceView
     }
 
     private void drawLimitTime() {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 surfaceView.setScaleX(limitTime -= DEFAULT_DECREMENT);
@@ -99,6 +101,4 @@ public class LimitTimeSurfaceView
         //リミットタイムが0になれば呼び出す
         void enemyAttack();
     }
-
-
 }
