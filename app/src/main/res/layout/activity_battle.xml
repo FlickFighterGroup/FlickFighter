@@ -27,6 +27,7 @@
         android:layout_width="150dp"
         android:layout_height="10dp"
         android:layout_below="@id/enemy_image"
+        android:background="#00FF00"
         android:layout_centerHorizontal="true"
         />
 
@@ -65,7 +66,6 @@
         android:id="@+id/button_debug_animation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="enemyAnimation"
         android:text="animation"
         />
 
