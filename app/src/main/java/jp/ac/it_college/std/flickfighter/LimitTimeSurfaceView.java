@@ -74,6 +74,7 @@ public class LimitTimeSurfaceView
                     drawLimitTime();
 
                     if (limitTime <= 0) {
+                        stopMeasurement();
                         listener.enemyAttack();
                         limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
                     }

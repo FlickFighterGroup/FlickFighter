@@ -185,5 +185,7 @@ public class BattleActivity extends Activity
                 enemyAnimation((ImageView) findViewById(R.id.enemy_image));
             }
         });
+        gameStart();
+
     }
 }
