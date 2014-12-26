@@ -76,7 +76,7 @@ public class LimitTimeSurfaceView
                     if (limitTime <= 0) {
                         stopMeasurement();
                         listener.enemyAttack();
-                        limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
+                        resetLimitTime();
                     }
 
                     mHolder.unlockCanvasAndPost(canvas);
