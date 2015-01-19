@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StatusActivity extends Activity implements View.OnClickListener{
     private SharedPreferences playerStatus;
     private static final String ATTACK = "attackLevel";
     private static final String DEFENCE = "defenceLevel";
     private static final String LIFE = "lifeLevel";
+    private static final String POINT = "point";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +38,22 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     private void levelUp(final String statusName) {
         new AlertDialog.Builder(this)
                 .setTitle("レベルアップ")
-                .setMessage("必要ポイント: 5 \nレベルアップしますか?")
+                .setMessage("必要ポイント: 5 \nレベルアップしますか? \n 現在のポイント：" + playerStatus.getInt(POINT, 0))
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //プリファレンスに保存されている各ステータス値を加算
-                        SharedPreferences.Editor editor = playerStatus.edit();
-                        editor.putInt(statusName, playerStatus.getInt(statusName, 0) + 1)
-                                .apply();
-                        statusDisplay();
+                        if (5 <= playerStatus.getInt(POINT, 0)) {
+                            //プリファレンスに保存されている各ステータス値を加算
+                            SharedPreferences.Editor editor = playerStatus.edit();
+                            editor.putInt(statusName, playerStatus.getInt(statusName, 0) + 1)
+                                    .putInt(POINT, playerStatus.getInt(POINT, 0) - 5)
+                                    .apply();
+                            statusDisplay();
+                            Toast.makeText(getApplicationContext(), "レベルアップしました！", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "ポイントが足りません！", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
