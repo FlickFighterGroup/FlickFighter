@@ -256,6 +256,7 @@ public class BattleActivity extends Activity
                 @Override
                 public void run() {
                     currentTime += 1;
+                    //TODO:format変更してない
                     timerLabel.setText(String.valueOf(currentTime));
                 }
             });
