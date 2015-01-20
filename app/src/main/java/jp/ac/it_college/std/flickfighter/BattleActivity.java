@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,6 +19,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class BattleActivity extends Activity
@@ -34,6 +36,11 @@ public class BattleActivity extends Activity
     private Handler mHandler;
     private boolean noMistakes;
     private int stageId;
+    //Timer初期化
+    private TextView timerLabel;
+    private Timer timer;
+    private int currentTime = 0 ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,15 @@ public class BattleActivity extends Activity
         setContentView(R.layout.activity_battle);
         stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         randomStringView();
+
+        //Timer表示
+        timerLabel = (TextView) findViewById(R.id.timer_label);
+        // タイマーをセット
+        timer = new Timer();
+        TimerTask timerTask = new Task1();
+        timer.scheduleAtFixedRate(timerTask, 0, 100);
+
+
     }
 
     @Override
@@ -224,5 +240,25 @@ public class BattleActivity extends Activity
         });
         gameStart();
 
+    }
+    public class Task1 extends TimerTask {
+
+        private Handler handler;
+
+        public Task1() {
+            handler = new Handler();
+        }
+
+        @Override
+        public void run() {
+            // Viewの操作だけじゃなくてトーストを出すのにもHandler使わないといけないのか。。。
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    currentTime += 1;
+                    timerLabel.setText(String.valueOf(currentTime));
+                }
+            });
+        }
     }
 }
