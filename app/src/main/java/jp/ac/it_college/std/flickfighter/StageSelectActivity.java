@@ -37,6 +37,11 @@ public class StageSelectActivity extends Activity{
                 }).show();
     }
 
+    public void goToStatus(View view) {
+        Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
+        startActivity(intent);
+    }
+
     public void stageSelect(View view) {
         switch (view.getId()) {
             case R.id.button_stage1:
