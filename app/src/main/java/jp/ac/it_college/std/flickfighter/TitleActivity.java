@@ -18,5 +18,6 @@ public class TitleActivity extends Activity {
     public void startClicked(View v){
         Intent intent = new Intent(this, StatusActivity.class);
         startActivity(intent);
+        finish();
     }
 }

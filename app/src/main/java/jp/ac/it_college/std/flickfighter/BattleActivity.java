@@ -132,6 +132,8 @@ public class BattleActivity extends Activity
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(getApplicationContext(), StageSelectActivity.class);
+                            startActivity(intent);
                             finish();
                         }
                     })
@@ -160,6 +162,7 @@ public class BattleActivity extends Activity
                 .putExtra("stage_id", stageId)
                 .putExtra("no_mistake", noMistakes);
         startActivity(intent);
+        finish();
     }
 
     public void keyBoardShown(View view) {

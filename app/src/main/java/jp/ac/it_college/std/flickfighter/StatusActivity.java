@@ -33,6 +33,7 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     public void goToStageSelect(View v){
         Intent intent = new Intent(this, StageSelectActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void levelUp(final String statusName) {
