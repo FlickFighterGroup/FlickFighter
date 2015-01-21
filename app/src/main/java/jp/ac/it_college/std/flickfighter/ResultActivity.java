@@ -1,6 +1,7 @@
 package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -100,5 +101,12 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         i.setLayoutParams(new ImageSwitcher.LayoutParams(
                 Gallery.LayoutParams.MATCH_PARENT, Gallery.LayoutParams.MATCH_PARENT));
         return i;
+    }
+
+    //(リザルト画面)TouchToNextのonClickメソッド
+    public void goToNext(View view) {
+        Intent intent = new Intent(this, StatusActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -77,5 +77,18 @@
         android:layout_toRightOf="@id/challenge_clear3"
         android:layout_marginTop="50dp" />
 
+    <TextView
+        android:id="@+id/label_to_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="TOUCH TO NEXT"
+        android:textSize="30sp"
+        android:onClick="goToNext"
+        android:clickable="true"
+        />
+
 
 </RelativeLayout>
