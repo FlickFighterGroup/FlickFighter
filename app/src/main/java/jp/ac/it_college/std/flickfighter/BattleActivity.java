@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,16 +31,19 @@ public class BattleActivity extends Activity
     private TextView enemyString;
     private EditText userInputText;
     private String TAG = "BattleActivity";
-    private String beforeString = "";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
     private Handler mHandler;
-    private boolean noMistakes;
-    private int stageId;
     //Timer初期化
     private TextView timerLabel;
     private Timer timer;
-    private int currentTime = 0 ;
+    //intentで渡すフィールド
+    private int stageId;
+    private long currentTime = 0 ;
+    private boolean noMistakes;
+    //getIntentで使う定数
+    public static final String PREF_NO_MISTAKES = "PREF_NO_MISTAKESs";
+    public static final String PREF_CLEAR_TIME = "clear_time";
 
 
     @Override
@@ -65,21 +69,11 @@ public class BattleActivity extends Activity
         mHandler = new Handler(getMainLooper());
         SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
         limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, mHandler, this);
-        beforeString = "";
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
         noMistakes = true;
-
-        //アニメーションデバッグ用ボタン
-        findViewById(R.id.button_debug_animation)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        enemyAnimation((ImageView) findViewById(R.id.enemy_image));
-                    }
-                });
     }
 
     @Override
@@ -97,26 +91,10 @@ public class BattleActivity extends Activity
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN
-                && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            if (stringIsMatch(userInputText.getText().toString(),
-                    enemyString.getText().toString())) {
-                //全部打ち終わったら文字を切り替える
-                userInputText.setText("");
-                randomStringView();
-                // リミットタイムをリセットする
-                limitTimeSurfaceView.resetLimitTime();
-            } else {
-                noMistakes = false;
-            }
+        //エンターキー押下時の処理を無効にする
+        if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
             return true;
         }
-
-        if (event.getAction() == KeyEvent.ACTION_UP
-                && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            return true;
-        }
-
         return super.dispatchKeyEvent(event);
     }
 
@@ -146,8 +124,11 @@ public class BattleActivity extends Activity
 
             return true;
         }
+
         return super.onKeyDown(keyCode, event);
     }
+
+
 
     public void gameStart() {
         limitTimeSurfaceView.startMeasurement();
@@ -159,8 +140,9 @@ public class BattleActivity extends Activity
 
     public void goToResult(View view) {
         Intent intent = new Intent(this, ResultActivity.class)
-                .putExtra("stage_id", stageId)
-                .putExtra("no_mistake", noMistakes);
+                .putExtra(StageSelectActivity.STAGE_ID, stageId)
+                .putExtra(PREF_NO_MISTAKES, noMistakes)
+                .putExtra(PREF_CLEAR_TIME, currentTime);
         startActivity(intent);
         finish();
     }
@@ -192,18 +174,20 @@ public class BattleActivity extends Activity
                 " after:" + String.valueOf(after));
     }
 
-    private boolean stringIsMatch(String userText, String enemyText) {
-        return userText.length() == enemyText.length() && userText.equals(enemyText);
-    }
-
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         Log.d(TAG, "onTextChanged() s:" + s.toString() +
                 " start:" + String.valueOf(start) + " before:" + String.valueOf(before) +
                 " count:" + String.valueOf(count));
-/*
-        if (enemyString.getText().toString().substring(start, count)
-                .equals(s.toString().substring(start, count))) {
+
+        //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
+        if(s.length() > enemyString.length()) {
+            return;
+
+        }
+
+        if (enemyString.getText().toString().substring(0, s.length())
+                .equals(s.toString().substring(0, s.length()))) {
             Log.d("judge", String.valueOf(true));
             if (enemyString.getText().length() == s.length()) {
                 //全部打ち終わったら文字を切り替える
@@ -213,19 +197,11 @@ public class BattleActivity extends Activity
                 limitTimeSurfaceView.resetLimitTime();
             } else {
                 //文字列が一致すれば色を変える
-                beforeString = s.toString();
                 String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) +
                         "</font>" + text.substring(s.length(), text.length()) ;
                 enemyString.setText(Html.fromHtml(txtStr));
             }
-        } else {
-            //間違っていれば文字列を戻す
-            Log.d("judge", String.valueOf(false));
-            userInputText.setText(beforeString);
-            userInputText.requestFocus();
-            userInputText.setSelection(beforeString.length());
         }
-*/
     }
 
     @Override
@@ -247,9 +223,11 @@ public class BattleActivity extends Activity
     public class Task1 extends TimerTask {
 
         private Handler handler;
+        private long startTime;
 
         public Task1() {
             handler = new Handler();
+            startTime = System.currentTimeMillis();
         }
 
         @Override
@@ -258,9 +236,10 @@ public class BattleActivity extends Activity
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    currentTime += 1;
-                    //TODO:format変更してない
-                    timerLabel.setText(String.valueOf(currentTime));
+                    currentTime = System.currentTimeMillis() - startTime;
+                    String elapsedTime = String.format("%02d:%02d",
+                            currentTime / 60000, currentTime % 60000 / 1000);
+                    timerLabel.setText(String.valueOf(elapsedTime));
                 }
             });
         }

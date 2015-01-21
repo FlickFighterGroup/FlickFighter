@@ -2,13 +2,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="goToResult"
-    android:orientation="vertical">
-
-
+    >
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="290dp"
         android:src="@drawable/flick_background"
         />
 
@@ -63,13 +61,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_debug_animation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="animation"
-        />
-
-    <Button
         android:id="@+id/keyBoardShownButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,9 +73,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="00:00.00"
-        android:paddingRight="20dp"
-        android:layout_alignParentTop="true"
+        android:text="00:00"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
