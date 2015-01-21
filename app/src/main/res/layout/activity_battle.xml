@@ -44,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="0dp"
-            android:textColor="#0000FF"
+            android:textSize="30dp"
+            android:textColor="#FFF"
             android:singleLine="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -76,5 +76,16 @@
         android:layout_alignParentBottom="true"
         android:onClick="keyBoardShown"
         android:text="キーボードを表示" />
+
+    <TextView
+        android:id="@+id/timer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="00:00.00"
+        android:paddingRight="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

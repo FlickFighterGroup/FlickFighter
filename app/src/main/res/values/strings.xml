@@ -11,5 +11,6 @@
     <string name="select_stage">ステージ選択</string>
     <string name="title_activity_battle">BattleActivity</string>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_timer">TimerActivity</string>
 
 </resources>

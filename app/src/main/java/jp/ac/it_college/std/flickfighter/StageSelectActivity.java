@@ -27,6 +27,7 @@ public class StageSelectActivity extends Activity{
                     public void onClick(DialogInterface dialogInterface, int i) {
                         intent.putExtra(STAGE_ID, stageId);
                         startActivity(intent);
+                        finish();
                     }
                 })
                 .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
@@ -35,6 +36,12 @@ public class StageSelectActivity extends Activity{
                         return;
                     }
                 }).show();
+    }
+
+    public void goToStatus(View view) {
+        Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void stageSelect(View view) {
