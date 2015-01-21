@@ -16,16 +16,19 @@ import android.widget.ViewSwitcher;
 public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory {
     private SharedPreferences playerStatus;
     private int stageId;
+    public static final String PREF_POINT = "point";
     private int[] img =  {
             R.drawable.true_img
             ,R.drawable.false_img
     };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
         playerStatus = getSharedPreferences("status", MODE_PRIVATE);
-        stageId = getIntent().getExtras().getInt("stage_id");
+        stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         checkChallenge();
     }
 
@@ -39,57 +42,37 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         challenge3.setFactory(this);
 
         SharedPreferences.Editor editor = playerStatus.edit();
-        if (true) {
+        if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < 240 * 1000) {
             challenge1.setImageResource(img[0]);
             //TODO:３分以内にクリアしたflagを受け取るまでこのまま
-//            if (playerStatus.getBoolean("stage_challenge1", false)) {
-
-//            } else {
-                editor.putInt("point", playerStatus.getInt("point", 0) + 1)
-                        .putBoolean("stage1_challenge1", true)
+            if (!getIntent().getExtras().getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)) {
+                editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
+                        .putBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, true)
                         .apply();
-//            }
+            }
         } else {
             challenge1.setImageResource(img[1]);
         }
 
         if (true) {
             challenge2.setImageResource(img[0]);
-            editor.putInt("point", playerStatus.getInt("point", 0) + 1)
+            editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
                     .apply();
         } else {
             challenge2.setImageResource(img[1]);
         }
 
-        if (getIntent().getExtras().getBoolean("no_mistake")) {
+        if (getIntent().getExtras().getBoolean(BattleActivity.PREF_NO_MISTAKES)) {
             challenge3.setImageResource(img[0]);
-            if (playerStatus.getBoolean(stageId + "3", false)) {
-
-            } else {
-                editor.putInt("point", playerStatus.getInt("point", 0) + 1)
-                        .putBoolean(stageId + "3", true)
+            if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, false)) {
+                editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
+                        .putBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, true)
                         .apply();
             }
         } else {
             challenge3.setImageResource(img[1]);
         }
 
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.result, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
