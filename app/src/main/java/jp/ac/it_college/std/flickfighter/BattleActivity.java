@@ -44,6 +44,14 @@ public class BattleActivity extends Activity
     //getIntentで使う定数
     public static final String PREF_NO_MISTAKES = "PREF_NO_MISTAKESs";
     public static final String PREF_CLEAR_TIME = "clear_time";
+    //敵キャラのパスを登録
+    private int[] enemyPath = {
+            R.drawable.zako1
+            , R.drawable.zako2
+            , R.drawable.zako3
+            , R.drawable.zako4
+    };
+    private ImageView enemyImage;
 
 
     @Override
@@ -52,6 +60,7 @@ public class BattleActivity extends Activity
         setContentView(R.layout.activity_battle);
         stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         randomStringView();
+        randomEnemyView();
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
@@ -154,8 +163,14 @@ public class BattleActivity extends Activity
     public void randomStringView() {
         //敵の文字列を表示
         TextView textView = (TextView) findViewById(R.id.enemyString);
-        text = WordBook.randomWordView(stageId);
+        text = EnemyInfo.randomWordView(stageId);
         textView.setText(text);
+    }
+
+    public void randomEnemyView() {
+        //敵キャラ表示
+        enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        enemyImage.setImageResource(enemyPath[EnemyInfo.randomEnemySummons(enemyPath.length)]);
     }
 
     public void enemyAnimation(ImageView view) {
