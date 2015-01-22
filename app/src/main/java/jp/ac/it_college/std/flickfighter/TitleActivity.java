@@ -12,7 +12,14 @@ public class TitleActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // タイトル画面のSTARTの点滅
+        new Winker(findViewById(R.id.label_start))
+                .startWink();
     }
 
     public void startClicked(View v){
