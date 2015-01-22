@@ -30,4 +30,18 @@ public class EnemyInfo {
         rand = new Random();
         return rand.nextInt(i);
     }
+
+    public static int enemyLifeSetting(int i) {
+        int[] enemyLife = {
+                3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6
+        };
+        return enemyLife[i];
+    }
+
+    public static int enemyPowSetting(int i) {
+        int[] enemyPow = {
+                1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 5
+        };
+        return enemyPow[i];
+    }
 }
