@@ -1,6 +1,7 @@
 package jp.ac.it_college.std.flickfighter;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceHolder;
@@ -15,14 +16,17 @@ public class LimitTimeSurfaceView
     private boolean mIsAlive = false;
     private boolean mMeasurement = false;
     private static final float DEFAULT_LIMIT_TIME_BAR_SIZE = 1.0f;
+    private static final float PERCENT_60 = DEFAULT_LIMIT_TIME_BAR_SIZE * 0.6f;
+    private static final float PERCENT_30 = DEFAULT_LIMIT_TIME_BAR_SIZE * 0.2f;
     private static final float DEFAULT_DECREMENT = 0.005f;
-    private float limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
+    private float limitTime;
     private SurfaceView surfaceView;
     private Handler mHandler;
 
     public LimitTimeSurfaceView(SurfaceView surfaceView, Handler handler, EnemyActionListener listener) {
         this.surfaceView = surfaceView;
         this.listener = listener;
+        limitTime = DEFAULT_LIMIT_TIME_BAR_SIZE;
         mHolder = surfaceView.getHolder();
         mHolder.addCallback(this);
         mHandler = handler;
@@ -93,6 +97,16 @@ public class LimitTimeSurfaceView
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                // ゲージ残量に応じてゲージの色を変える
+                if(limitTime >= PERCENT_60 && limitTime <= DEFAULT_LIMIT_TIME_BAR_SIZE) {
+                    surfaceView.setBackgroundColor(Color.GREEN);
+                } else if (limitTime >= PERCENT_30 && limitTime <= PERCENT_60) {
+                    surfaceView.setBackgroundColor(Color.YELLOW);
+                } else  {
+                    surfaceView.setBackgroundColor(Color.RED);
+                }
+
+                //ゲージを減らす
                 surfaceView.setScaleX(limitTime -= DEFAULT_DECREMENT);
             }
         });
