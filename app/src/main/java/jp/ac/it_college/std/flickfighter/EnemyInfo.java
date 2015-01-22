@@ -2,7 +2,8 @@ package jp.ac.it_college.std.flickfighter;
 
 import java.util.Random;
 
-public class WordBook {
+public class EnemyInfo {
+    private static Random rand;
 
     public static String[][] wordBook(){
         String[][] word = new String[10][];
@@ -20,8 +21,13 @@ public class WordBook {
     }
 
     public static String randomWordView(int i){
-        Random rand = new Random();
+        rand = new Random();
         String[][] tmp = wordBook();
         return tmp[rand.nextInt(i)][rand.nextInt(15)];
+    }
+
+    public static int randomEnemySummons(int i) {
+        rand = new Random();
+        return rand.nextInt(i);
     }
 }
