@@ -34,6 +34,14 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         checkChallenge();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // リザルト画面の"TOUCH TO NEXT"の点滅
+        new Winker(findViewById(R.id.label_to_next))
+                .startWink();
+    }
+
     private void checkChallenge() {
 
         ImageSwitcher challenge1 = (ImageSwitcher) findViewById(R.id.challenge_clear1);
