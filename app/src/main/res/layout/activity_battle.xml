@@ -16,9 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="150dp"
         android:layout_marginTop="120dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/zako1"
-        />
+        android:layout_centerHorizontal="true"/>
 
     <SurfaceView
         android:id="@+id/limit_time_bar"
