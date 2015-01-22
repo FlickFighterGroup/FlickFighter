@@ -17,6 +17,8 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
     private SharedPreferences playerStatus;
     private int stageId;
     public static final String PREF_POINT = "point";
+    //規定時間
+    public static final long STIPULATED_TIME = 180 * 1000;
     private int[] img =  {
             R.drawable.true_img
             ,R.drawable.false_img
@@ -42,7 +44,7 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         challenge3.setFactory(this);
 
         SharedPreferences.Editor editor = playerStatus.edit();
-        if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < 240 * 1000) {
+        if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < STIPULATED_TIME) {
             challenge1.setImageResource(img[0]);
             //TODO:３分以内にクリアしたflagを受け取るまでこのまま
             if (!getIntent().getExtras().getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)) {
