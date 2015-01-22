@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -27,8 +28,10 @@ import java.util.TimerTask;
 
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener {
+    private int playerPow;
+    private int playerDefence;
+    private int playerLife;
     private InputMethodManager inputMethodManager;
-    private TextView enemyString;
     private EditText userInputText;
     private String TAG = "BattleActivity";
     private String text;
@@ -36,11 +39,9 @@ public class BattleActivity extends Activity
     private Handler mHandler;
     //Timer初期化
     private TextView timerLabel;
-    private Timer timer;
     //intentで渡すフィールド
     private int stageId;
     private long currentTime = 0 ;
-    private boolean noMistakes;
     //getIntentで使う定数
     public static final String PREF_NO_MISTAKES = "PREF_NO_MISTAKESs";
     public static final String PREF_CLEAR_TIME = "clear_time";
@@ -51,21 +52,29 @@ public class BattleActivity extends Activity
             , R.drawable.zako3
             , R.drawable.zako4
     };
-    private ImageView enemyImage;
+    private TextView enemyString;
+    private int enemyLife;
+    private int enemyPow;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
+
         stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        SharedPreferences playerStatus = getSharedPreferences("status", MODE_PRIVATE);
+        playerPow = playerStatus.getInt("attackLevel", 1);
+        playerDefence = playerStatus.getInt("defenceLevel", 0);
+        playerLife = playerStatus.getInt("lifeLevel", 5);
+
         randomStringView();
-        randomEnemyView();
+        enemySummon();
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
         // タイマーをセット
-        timer = new Timer();
+        Timer timer = new Timer();
         TimerTask timerTask = new Task1();
         timer.scheduleAtFixedRate(timerTask, 0, 100);
 
@@ -82,7 +91,6 @@ public class BattleActivity extends Activity
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
-        noMistakes = true;
     }
 
     @Override
@@ -150,7 +158,6 @@ public class BattleActivity extends Activity
     public void goToResult(View view) {
         Intent intent = new Intent(this, ResultActivity.class)
                 .putExtra(StageSelectActivity.STAGE_ID, stageId)
-                .putExtra(PREF_NO_MISTAKES, noMistakes)
                 .putExtra(PREF_CLEAR_TIME, currentTime);
         startActivity(intent);
         finish();
@@ -167,10 +174,16 @@ public class BattleActivity extends Activity
         textView.setText(text);
     }
 
-    public void randomEnemyView() {
+    public void enemySummon() {
         //敵キャラ表示
-        enemyImage = (ImageView) findViewById(R.id.enemy_image);
-        enemyImage.setImageResource(enemyPath[EnemyInfo.randomEnemySummons(enemyPath.length)]);
+        ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        //表示と同時に敵キャラのIdを設定
+        int enemyId;
+        enemyImage.setImageResource(
+                enemyPath[enemyId = EnemyInfo.randomEnemySummons(enemyPath.length)]);
+
+        enemyLife = EnemyInfo.enemyLifeSetting(enemyId);
+        enemyPow = EnemyInfo.enemyPowSetting(enemyId);
     }
 
     public void enemyAnimation(ImageView view) {
@@ -207,6 +220,13 @@ public class BattleActivity extends Activity
             if (enemyString.getText().length() == s.length()) {
                 //全部打ち終わったら文字を切り替える
                 userInputText.setText("");
+                //プレイヤー側の攻撃処理
+                enemyLife -= playerPow;
+                //enemyLifeが0以下になったら新しく生成
+                if (enemyLife <= 0) {
+                    //TODO:敵が消えるアニメーションを追加する
+                    enemySummon();
+                }
                 randomStringView();
                 // リミットタイムをリセットする
                 limitTimeSurfaceView.resetLimitTime();
@@ -233,6 +253,11 @@ public class BattleActivity extends Activity
             }
         });
         gameStart();
+        playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
+        if (playerLife <= 0) {
+            //TODO:クリア判定実装後に引数をなくす
+            goToResult(null);
+        }
 
     }
     public class Task1 extends TimerTask {

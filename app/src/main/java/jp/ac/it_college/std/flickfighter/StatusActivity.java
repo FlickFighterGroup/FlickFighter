@@ -44,9 +44,17 @@ public class StatusActivity extends Activity implements View.OnClickListener{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (5 <= playerStatus.getInt(POINT, 0)) {
+                            int defaultValue = 0;
+                            if (statusName.equals(ATTACK)) {
+                                defaultValue = 1;
+                            } else if (statusName.equals(DEFENCE)) {
+                                defaultValue = 0;
+                            } else if (statusName.equals(LIFE)) {
+                                defaultValue = 5;
+                            }
                             //プリファレンスに保存されている各ステータス値を加算
                             SharedPreferences.Editor editor = playerStatus.edit();
-                            editor.putInt(statusName, playerStatus.getInt(statusName, 0) + 1)
+                            editor.putInt(statusName, playerStatus.getInt(statusName, defaultValue) + 1)
                                     .putInt(POINT, playerStatus.getInt(POINT, 0) - 5)
                                     .apply();
                             statusDisplay();
@@ -68,11 +76,11 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
     private void statusDisplay(){
         ((TextView)findViewById(R.id.status_attack_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(ATTACK, 0)));
+                .setText(String.valueOf("Lv." + playerStatus.getInt(ATTACK, 1)));
         ((TextView)findViewById(R.id.status_defence_level))
                 .setText(String.valueOf("Lv." + playerStatus.getInt(DEFENCE, 0)));
         ((TextView)findViewById(R.id.status_life_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(LIFE, 0)));
+                .setText(String.valueOf("Lv." + playerStatus.getInt(LIFE, 5)));
     }
 
     @Override
