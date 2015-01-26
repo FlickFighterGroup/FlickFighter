@@ -4,6 +4,20 @@ import java.util.Random;
 
 public class EnemyInfo {
     private static Random rand;
+    public static int[] bossPath = {
+            R.drawable.boss1 ,R.drawable.boss2
+            ,R.drawable.boss3 ,R.drawable.boss4
+            ,R.drawable.boss5 ,R.drawable.boss6
+            ,R.drawable.boss7 ,R.drawable.boss8
+            ,R.drawable.boss9 ,R.drawable.boss10
+    };
+    //敵キャラのパスを登録
+    public static int[] enemyPath = {
+            R.drawable.zako1
+            , R.drawable.zako2
+            , R.drawable.zako3
+            , R.drawable.zako4
+    };
 
     public static String[][] wordBook(){
         String[][] word = new String[10][];
@@ -43,5 +57,19 @@ public class EnemyInfo {
                 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 5
         };
         return enemyPow[i];
+    }
+
+    public static int bossLifeSetting(int i) {
+        int[] bossLife = {
+                5, 5, 6, 7, 7, 8, 9, 10, 10, 15
+        };
+        return bossLife[i];
+    }
+
+    public static int bossPowSetting(int i) {
+        int[] bossPow = {
+                2, 2, 3, 3, 4, 4, 5, 5, 6, 6
+        };
+        return bossPow[i];
     }
 }
