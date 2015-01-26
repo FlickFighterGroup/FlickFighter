@@ -4,6 +4,9 @@ import java.util.Random;
 
 public class EnemyInfo {
     private static Random rand;
+    public static int[] bossPath = {
+            R.drawable.zako1
+    };
 
     public static String[][] wordBook(){
         String[][] word = new String[10][];
@@ -43,5 +46,19 @@ public class EnemyInfo {
                 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 5
         };
         return enemyPow[i];
+    }
+
+    public static int bossLifeSetting(int i) {
+        int[] bossLife = {
+                5, 5, 6, 7, 7, 8, 9, 10, 10, 15
+        };
+        return bossLife[i];
+    }
+
+    public static int bossPowSetting(int i) {
+        int[] bossPow = {
+                2, 2, 3, 3, 4, 4, 5, 5, 6, 6
+        };
+        return bossPow[i];
     }
 }
