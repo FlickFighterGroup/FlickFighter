@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 
-public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory {
+public class ResultActivity extends Activity
+        implements ViewSwitcher.ViewFactory, View.OnClickListener {
     private SharedPreferences playerStatus;
     private int stageId;
     public static final String PREF_POINT = "point";
@@ -32,14 +33,10 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         playerStatus = getSharedPreferences("status", MODE_PRIVATE);
         stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         checkChallenge();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // リザルト画面の"TOUCH TO NEXT"の点滅
-        new Winker(findViewById(R.id.label_to_next))
-                .startWink();
+        //リトライ・終了ボタンのsetOnClickListener
+        findViewById(R.id.button_retry).setOnClickListener(this);
+        findViewById(R.id.button_to_status).setOnClickListener(this);
     }
 
     private void checkChallenge() {
@@ -96,10 +93,23 @@ public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory
         return i;
     }
 
-    //(リザルト画面)TouchToNextのonClickメソッド
-    public void goToNext(View view) {
-        Intent intent = new Intent(this, StatusActivity.class);
-        startActivity(intent);
-        finish();
+    @Override
+    public void onClick(View view) {
+        Intent intent = null;
+
+        switch (view.getId()) {
+            case R.id.button_retry:
+                intent = new Intent(this, BattleActivity.class)
+                        .putExtra(StageSelectActivity.STAGE_ID, stageId);
+                break;
+            case R.id.button_to_status:
+                intent = new Intent(this, StatusActivity.class);
+                break;
+        }
+
+        if(intent != null) {
+            startActivity(intent);
+            finish();
+        }
     }
 }

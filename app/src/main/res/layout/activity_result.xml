@@ -77,18 +77,31 @@
         android:layout_toRightOf="@id/challenge_clear3"
         android:layout_marginTop="50dp" />
 
-    <TextView
-        android:id="@+id/label_to_next"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:text="TOUCH TO NEXT"
-        android:textSize="30sp"
-        android:onClick="goToNext"
-        android:clickable="true"
-        />
+        >
+
+        <Button
+            android:id="@+id/button_retry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="リトライ"
+            />
+
+        <Button
+            android:id="@+id/button_to_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ステータスへ"
+            />
+
+    </LinearLayout>
 
 
 </RelativeLayout>
