@@ -57,13 +57,7 @@ public class BattleActivity extends Activity
     //TODO:変数名要変更
     private int maxBattleCount = 5;
     private int battleCount = 1;
-    //敵キャラのパスを登録
-    private int[] enemyPath = {
-            R.drawable.zako1
-            , R.drawable.zako2
-            , R.drawable.zako3
-            , R.drawable.zako4
-    };
+
     private TextView enemyString;
     private int enemyLife;
     private int enemyPow;
@@ -199,7 +193,7 @@ public class BattleActivity extends Activity
 
         int enemyId;
         enemyImage.setImageResource(
-                enemyPath[enemyId = EnemyInfo.randomEnemySummons(enemyPath.length)]);
+                EnemyInfo.enemyPath[enemyId = EnemyInfo.randomEnemySummons(EnemyInfo.enemyPath.length)]);
 
         if (enemyId == 0) {
             rareFrag = true;

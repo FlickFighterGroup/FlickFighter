@@ -5,7 +5,18 @@ import java.util.Random;
 public class EnemyInfo {
     private static Random rand;
     public static int[] bossPath = {
+            R.drawable.boss1 ,R.drawable.boss2
+            ,R.drawable.boss3 ,R.drawable.boss4
+            ,R.drawable.boss5 ,R.drawable.boss6
+            ,R.drawable.boss7 ,R.drawable.boss8
+            ,R.drawable.boss9 ,R.drawable.boss10
+    };
+    //敵キャラのパスを登録
+    public static int[] enemyPath = {
             R.drawable.zako1
+            , R.drawable.zako2
+            , R.drawable.zako3
+            , R.drawable.zako4
     };
 
     public static String[][] wordBook(){
