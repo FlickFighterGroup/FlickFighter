@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 
@@ -28,8 +29,12 @@ public class ResultActivity extends Activity
         findViewById(R.id.button_retry).setOnClickListener(this);
         findViewById(R.id.button_to_status).setOnClickListener(this);
 
+        TextView clearLabel = (TextView)findViewById(R.id.result_clear_text);
+
+
         //ステージ突破成功時にチャレンジフラグメントを表示する
-        if(true) {
+        if(getIntent().getExtras().getBoolean(BattleActivity.RPEF_CLEAR_JUDGE)) {
+            clearLabel.setText("CLEAR!");
             //各チャレンジの成功・失敗判定をBundleにput
             Bundle challengeFrag = new Bundle();
             //クリアタイム
@@ -39,11 +44,11 @@ public class ResultActivity extends Activity
 
             challengeFrag.putBoolean(
                     ChallengeFragment.CHALLENGE_CLEAR_NO_DAMAGE,
-                    getIntent().getBooleanExtra(BattleActivity.PREF_CLEAR_TIME, false));
+                    getIntent().getBooleanExtra(BattleActivity.PREF_NO_DAMAGE, false));
 
             challengeFrag.putBoolean(
                     ChallengeFragment.CHALLENGE_CLEAR_RARE_CRUSHING,
-                    getIntent().getBooleanExtra(BattleActivity.PREF_CLEAR_TIME, false));
+                    getIntent().getBooleanExtra(BattleActivity.PREF_RARE_CRUSHING, false));
 
             //ステージ突破成功・失敗の判定後フラグメントを切り替える
             if (savedInstanceState == null) {
@@ -52,6 +57,8 @@ public class ResultActivity extends Activity
                                 ChallengeFragment.newInstance(challengeFrag))
                         .commit();
             }
+        } else {
+            clearLabel.setText("Failure...");
         }
     }
 

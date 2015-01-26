@@ -95,9 +95,9 @@ public class ChallengeFragment extends Fragment
 
         if (mChallenge3) {
             challenge3.setImageResource(img[0]);
-            if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, false)) {
+            if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, false)) {
                 editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
-                        .putBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, true)
+                        .putBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, true)
                         .apply();
             }
         } else {
