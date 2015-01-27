@@ -50,7 +50,7 @@ public class BattleActivity extends Activity
     public static final String PREF_RARE_CRUSHING = "rare_crushing";
     public static final String PREF_CLEAR_TIME = "clear_time";
     public static final String PREF_NO_DAMAGE = "no_damage";
-    public static final String RPEF_CLEAR_JUDGE = "clearJudge";
+    public static final String PREF_CLEAR_JUDGE = "clearJudge";
     //フラグいろいろ
     private boolean rareFrag = false;
     private boolean no_damage = true;
@@ -98,6 +98,14 @@ public class BattleActivity extends Activity
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+        //キーボード表示ボタンのonClickListener
+        findViewById(R.id.keyBoardShownButton)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        keyBoardShown();
+                    }
+                });
     }
 
     @Override
@@ -143,6 +151,7 @@ public class BattleActivity extends Activity
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             gameStart();
+                            keyBoardShown();
                         }
                     }).show();
 
@@ -166,7 +175,7 @@ public class BattleActivity extends Activity
 
     public void goToResult(boolean clear) {
         Intent intent = new Intent(this, ResultActivity.class)
-                .putExtra(RPEF_CLEAR_JUDGE, clear)
+                .putExtra(PREF_CLEAR_JUDGE, clear)
                 .putExtra(StageSelectActivity.STAGE_ID, stageId)
                 .putExtra(PREF_CLEAR_TIME, currentTime)
                 .putExtra(PREF_NO_DAMAGE, no_damage)
@@ -175,7 +184,7 @@ public class BattleActivity extends Activity
         finish();
     }
 
-    public void keyBoardShown(View view) {
+    public void keyBoardShown() {
         inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 

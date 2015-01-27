@@ -2,16 +2,9 @@ package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Gallery;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 
 public class ResultActivity extends Activity
@@ -33,7 +26,7 @@ public class ResultActivity extends Activity
 
 
         //ステージ突破成功時にチャレンジフラグメントを表示する
-        if(getIntent().getExtras().getBoolean(BattleActivity.RPEF_CLEAR_JUDGE)) {
+        if(getIntent().getExtras().getBoolean(BattleActivity.PREF_CLEAR_JUDGE)) {
             clearLabel.setText("CLEAR!");
             //各チャレンジの成功・失敗判定をBundleにput
             Bundle challengeFrag = new Bundle();
