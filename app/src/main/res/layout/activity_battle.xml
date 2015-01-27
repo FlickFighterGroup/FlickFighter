@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="goToResult"
     >
 
     <ImageView
@@ -28,6 +27,7 @@
         />
 
     <LinearLayout
+        android:id="@+id/text_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
@@ -63,7 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:onClick="keyBoardShown"
         android:text="キーボードを表示" />
 
     <TextView

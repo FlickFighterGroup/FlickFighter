@@ -2,104 +2,76 @@ package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Gallery;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.ViewSwitcher;
+import android.widget.TextView;
 
 
-public class ResultActivity extends Activity implements ViewSwitcher.ViewFactory {
-    private SharedPreferences playerStatus;
+public class ResultActivity extends Activity
+        implements View.OnClickListener {
+
     private int stageId;
-    public static final String PREF_POINT = "point";
-    //規定時間
-    public static final long STIPULATED_TIME = 180 * 1000;
-    private int[] img =  {
-            R.drawable.true_img
-            ,R.drawable.false_img
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        playerStatus = getSharedPreferences("status", MODE_PRIVATE);
         stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
-        checkChallenge();
+
+        //リトライ・終了ボタンのsetOnClickListener
+        findViewById(R.id.button_retry).setOnClickListener(this);
+        findViewById(R.id.button_to_status).setOnClickListener(this);
+
+        TextView clearLabel = (TextView)findViewById(R.id.result_clear_text);
+
+
+        //ステージ突破成功時にチャレンジフラグメントを表示する
+        if(getIntent().getExtras().getBoolean(BattleActivity.PREF_CLEAR_JUDGE)) {
+            clearLabel.setText("CLEAR!");
+            //各チャレンジの成功・失敗判定をBundleにput
+            Bundle challengeFrag = new Bundle();
+            //クリアタイム
+            challengeFrag.putBoolean(
+                    ChallengeFragment.CHALLENGE_CLEAR_WITHIN_3MIN,
+                    getIntent().getBooleanExtra(BattleActivity.PREF_CLEAR_TIME, false));
+
+            challengeFrag.putBoolean(
+                    ChallengeFragment.CHALLENGE_CLEAR_NO_DAMAGE,
+                    getIntent().getBooleanExtra(BattleActivity.PREF_NO_DAMAGE, false));
+
+            challengeFrag.putBoolean(
+                    ChallengeFragment.CHALLENGE_CLEAR_RARE_CRUSHING,
+                    getIntent().getBooleanExtra(BattleActivity.PREF_RARE_CRUSHING, false));
+
+            //ステージ突破成功・失敗の判定後フラグメントを切り替える
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container,
+                                ChallengeFragment.newInstance(challengeFrag))
+                        .commit();
+            }
+        } else {
+            clearLabel.setText("Failure...");
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // リザルト画面の"TOUCH TO NEXT"の点滅
-        new Winker(findViewById(R.id.label_to_next))
-                .startWink();
-    }
+    public void onClick(View view) {
+        Intent intent = null;
 
-    private void checkChallenge() {
-
-        ImageSwitcher challenge1 = (ImageSwitcher) findViewById(R.id.challenge_clear1);
-        challenge1.setFactory(this);
-        ImageSwitcher challenge2 = (ImageSwitcher) findViewById(R.id.challenge_clear2);
-        challenge2.setFactory(this);
-        ImageSwitcher challenge3 = (ImageSwitcher) findViewById(R.id.challenge_clear3);
-        challenge3.setFactory(this);
-
-        SharedPreferences.Editor editor = playerStatus.edit();
-        if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < STIPULATED_TIME) {
-            challenge1.setImageResource(img[0]);
-            //TODO:３分以内にクリアしたflagを受け取るまでこのまま
-            if (!getIntent().getExtras().getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)) {
-                editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
-                        .putBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, true)
-                        .apply();
-            }
-        } else {
-            challenge1.setImageResource(img[1]);
+        switch (view.getId()) {
+            case R.id.button_retry:
+                intent = new Intent(this, BattleActivity.class)
+                        .putExtra(StageSelectActivity.STAGE_ID, stageId);
+                break;
+            case R.id.button_to_status:
+                intent = new Intent(this, StatusActivity.class);
+                break;
         }
 
-        if (true) {
-            challenge2.setImageResource(img[0]);
-            editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
-                    .apply();
-        } else {
-            challenge2.setImageResource(img[1]);
+        if(intent != null) {
+            startActivity(intent);
+            finish();
         }
-
-        if (getIntent().getExtras().getBoolean(BattleActivity.PREF_NO_MISTAKES)) {
-            challenge3.setImageResource(img[0]);
-            if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, false)) {
-                editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
-                        .putBoolean(stageId + BattleActivity.PREF_NO_MISTAKES, true)
-                        .apply();
-            }
-        } else {
-            challenge3.setImageResource(img[1]);
-        }
-
-    }
-
-    @Override
-    public View makeView() {
-        // ApiDemos->Views->ImageSwitcherのソースからメソッドを丸々コピー
-        ImageView i = new ImageView(this);
-        i.setBackgroundColor(0xFF000000);
-        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        i.setLayoutParams(new ImageSwitcher.LayoutParams(
-                Gallery.LayoutParams.MATCH_PARENT, Gallery.LayoutParams.MATCH_PARENT));
-        return i;
-    }
-
-    //(リザルト画面)TouchToNextのonClickメソッド
-    public void goToNext(View view) {
-        Intent intent = new Intent(this, StatusActivity.class);
-        startActivity(intent);
-        finish();
     }
 }

@@ -20,6 +20,7 @@ import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -28,11 +29,14 @@ import java.util.TimerTask;
 
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener {
+    //TODO:バトル数左上に表示しろ
+    //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
     private int playerDefence;
     private int playerLife;
     private InputMethodManager inputMethodManager;
     private EditText userInputText;
+    private LinearLayout textBox;
     private String TAG = "BattleActivity";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
@@ -43,15 +47,17 @@ public class BattleActivity extends Activity
     private int stageId;
     private long currentTime = 0 ;
     //getIntentで使う定数
-    public static final String PREF_NO_MISTAKES = "PREF_NO_MISTAKESs";
+    public static final String PREF_RARE_CRUSHING = "rare_crushing";
     public static final String PREF_CLEAR_TIME = "clear_time";
-    //敵キャラのパスを登録
-    private int[] enemyPath = {
-            R.drawable.zako1
-            , R.drawable.zako2
-            , R.drawable.zako3
-            , R.drawable.zako4
-    };
+    public static final String PREF_NO_DAMAGE = "no_damage";
+    public static final String PREF_CLEAR_JUDGE = "clearJudge";
+    //フラグいろいろ
+    private boolean rareFrag = false;
+    private boolean no_damage = true;
+    //TODO:変数名要変更
+    private int maxBattleCount = 5;
+    private int battleCount = 1;
+
     private TextView enemyString;
     private int enemyLife;
     private int enemyPow;
@@ -78,6 +84,7 @@ public class BattleActivity extends Activity
         TimerTask timerTask = new Task1();
         timer.scheduleAtFixedRate(timerTask, 0, 100);
 
+        textBox = (LinearLayout) findViewById(R.id.text_box);
 
     }
 
@@ -91,6 +98,14 @@ public class BattleActivity extends Activity
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+        //キーボード表示ボタンのonClickListener
+        findViewById(R.id.keyBoardShownButton)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        keyBoardShown();
+                    }
+                });
     }
 
     @Override
@@ -136,6 +151,7 @@ public class BattleActivity extends Activity
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             gameStart();
+                            keyBoardShown();
                         }
                     }).show();
 
@@ -148,22 +164,27 @@ public class BattleActivity extends Activity
 
 
     public void gameStart() {
+        textBox.setVisibility(View.VISIBLE);
         limitTimeSurfaceView.startMeasurement();
     }
 
     public void gameStop() {
+        textBox.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
     }
 
-    public void goToResult(View view) {
+    public void goToResult(boolean clear) {
         Intent intent = new Intent(this, ResultActivity.class)
+                .putExtra(PREF_CLEAR_JUDGE, clear)
                 .putExtra(StageSelectActivity.STAGE_ID, stageId)
-                .putExtra(PREF_CLEAR_TIME, currentTime);
+                .putExtra(PREF_CLEAR_TIME, currentTime)
+                .putExtra(PREF_NO_DAMAGE, no_damage)
+                .putExtra(PREF_RARE_CRUSHING, rareFrag);
         startActivity(intent);
         finish();
     }
 
-    public void keyBoardShown(View view) {
+    public void keyBoardShown() {
         inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 
@@ -178,12 +199,25 @@ public class BattleActivity extends Activity
         //敵キャラ表示
         ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
         //表示と同時に敵キャラのIdを設定
+
         int enemyId;
         enemyImage.setImageResource(
-                enemyPath[enemyId = EnemyInfo.randomEnemySummons(enemyPath.length)]);
+                EnemyInfo.enemyPath[enemyId = EnemyInfo.randomEnemySummons(EnemyInfo.enemyPath.length)]);
 
+        if (enemyId == 0) {
+            rareFrag = true;
+        }
         enemyLife = EnemyInfo.enemyLifeSetting(enemyId);
         enemyPow = EnemyInfo.enemyPowSetting(enemyId);
+    }
+
+    public void bossSummon() {
+        ImageView bossImage = (ImageView) findViewById(R.id.enemy_image);
+
+        int bossId = stageId - 1;
+        bossImage.setImageResource(EnemyInfo.bossPath[bossId]);
+        enemyLife = EnemyInfo.bossLifeSetting(bossId);
+        enemyLife = EnemyInfo.bossPowSetting(bossId);
     }
 
     public void enemyAnimation(ImageView view) {
@@ -222,10 +256,18 @@ public class BattleActivity extends Activity
                 userInputText.setText("");
                 //プレイヤー側の攻撃処理
                 enemyLife -= playerPow;
-                //enemyLifeが0以下になったら新しく生成
+                //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                 if (enemyLife <= 0) {
-                    //TODO:敵が消えるアニメーションを追加する
-                    enemySummon();
+                    if (battleCount < maxBattleCount) {
+                        //TODO:敵が消えるアニメーションを追加する
+                        enemySummon();
+                    } else if (battleCount == maxBattleCount) {
+                        bossSummon();
+                    } else {
+                        gameStop();
+                        goToResult(true);
+                    }
+                    battleCount++;
                 }
                 randomStringView();
                 // リミットタイムをリセットする
@@ -246,6 +288,8 @@ public class BattleActivity extends Activity
 
     @Override
     public void enemyAttack() {
+        no_damage = false;
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -255,8 +299,7 @@ public class BattleActivity extends Activity
         gameStart();
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
         if (playerLife <= 0) {
-            //TODO:クリア判定実装後に引数をなくす
-            goToResult(null);
+            goToResult(false);
         }
 
     }
@@ -272,7 +315,6 @@ public class BattleActivity extends Activity
 
         @Override
         public void run() {
-            // Viewの操作だけじゃなくてトーストを出すのにもHandler使わないといけないのか。。。
             handler.post(new Runnable() {
                 @Override
                 public void run() {
