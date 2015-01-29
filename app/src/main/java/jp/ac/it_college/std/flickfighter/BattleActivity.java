@@ -6,21 +6,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -28,7 +33,7 @@ import java.util.TimerTask;
 
 
 public class BattleActivity extends Activity
-        implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener {
+        implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener{
     //TODO:バトル数左上に表示しろ
     //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
@@ -62,6 +67,7 @@ public class BattleActivity extends Activity
     private int enemyLife;
     private int enemyPow;
 
+    private ImageView enemyImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,8 @@ public class BattleActivity extends Activity
         playerDefence = playerStatus.getInt("defenceLevel", 0);
         playerLife = playerStatus.getInt("lifeLevel", 5);
 
+        //敵キャラ表示
+        enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
         enemySummon();
 
@@ -85,8 +93,8 @@ public class BattleActivity extends Activity
         timer.scheduleAtFixedRate(timerTask, 0, 100);
 
         textBox = (LinearLayout) findViewById(R.id.text_box);
-
     }
+
 
     @Override
     protected void onStart() {
@@ -106,6 +114,40 @@ public class BattleActivity extends Activity
                         keyBoardShown();
                     }
                 });
+    }
+
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Log.d("hasFocus:", String.valueOf(hasFocus));
+
+        //バトル画面のレイアウトサイズを取得
+        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
+        RelativeLayout.LayoutParams imgLayoutParams =
+                new RelativeLayout.LayoutParams(rootLayout.getWidth(), rootLayout.getHeight() / 2);
+
+        //ステージ背景画像
+        ImageView stageBackgroundView =
+                (ImageView) findViewById(R.id.image_stage_background);
+
+        stageBackgroundView.setLayoutParams(imgLayoutParams);
+
+        // 敵の画像などの表示位置を端末のウィンドウサイズに合わせて変更
+        int marginHeight = stageBackgroundView.getHeight() / 2;
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) findViewById(R.id.layout_enemy_box)
+                        .getLayoutParams();
+        layoutParams.setMargins(0, marginHeight, 0, 0);
+
+/*
+        Matrix m = new Matrix();
+        m.setTranslate(100, marginHeight);
+        enemyImage.setImageMatrix(m);
+*/
+        Log.d("backgroundHeight: ", String.valueOf(stageBackgroundView.getHeight()));;
+
+        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -196,8 +238,8 @@ public class BattleActivity extends Activity
     }
 
     public void enemySummon() {
-        //敵キャラ表示
-        ImageView enemyImage = (ImageView) findViewById(R.id.enemy_image);
+/*        //敵キャラ表示
+        enemyImage = (ImageView) findViewById(R.id.enemy_image);*/
         //表示と同時に敵キャラのIdを設定
 
         int enemyId;
