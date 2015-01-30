@@ -6,25 +6,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,7 +32,7 @@ import java.util.TimerTask;
 
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener{
-    //TODO:バトル数左上に表示しろ
+    //TODO:バトル数左上に表示しろ ー＞　完了？
     //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
     private int playerDefence;
@@ -56,6 +54,7 @@ public class BattleActivity extends Activity
     public static final String PREF_CLEAR_TIME = "clear_time";
     public static final String PREF_NO_DAMAGE = "no_damage";
     public static final String PREF_CLEAR_JUDGE = "clearJudge";
+    private ProgressBar playerLifeGauge;
     //フラグいろいろ
     private boolean rareFrag = false;
     private boolean no_damage = true;
@@ -67,7 +66,7 @@ public class BattleActivity extends Activity
     private TextView enemyString;
     private int enemyLife;
     private int enemyPow;
-
+    private ProgressBar enemyLifeGauge;
     private ImageView enemyImage;
 
     @Override
@@ -81,9 +80,15 @@ public class BattleActivity extends Activity
         playerDefence = playerStatus.getInt("defenceLevel", 0);
         playerLife = playerStatus.getInt("lifeLevel", 5);
 
+        //プレイヤーの体力ゲージ表示
+        playerLifeGauge = (ProgressBar) findViewById(R.id.player_life_gauge);
+        playerLifeGauge.setMax(playerLife);
+        playerLifeGauge.setProgress(playerLife);
+
         battleCountView = (TextView) findViewById(R.id.battle_count);
         battleCountView.setText(battleCount + " / " + maxBattleCount);
         //敵キャラ表示
+        enemyLifeGauge = (ProgressBar)findViewById(R.id.enemy_life_gauge);
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
         enemySummon();
@@ -258,6 +263,9 @@ public class BattleActivity extends Activity
         }
         enemyLife = EnemyInfo.enemyLifeSetting(enemyId);
         enemyPow = EnemyInfo.enemyPowSetting(enemyId);
+
+        enemyLifeGauge.setMax(enemyLife);
+        enemyLifeGauge.setProgress(enemyLife);
     }
 
     public void bossSummon() {
@@ -270,6 +278,9 @@ public class BattleActivity extends Activity
         bossImage.setImageResource(EnemyInfo.bossPath[bossId]);
         enemyLife = EnemyInfo.bossLifeSetting(bossId);
         enemyLife = EnemyInfo.bossPowSetting(bossId);
+
+        enemyLifeGauge.setMax(enemyLife);
+        enemyLifeGauge.setProgress(enemyLife);
     }
 
     public void enemyAnimation(ImageView view) {
@@ -297,7 +308,6 @@ public class BattleActivity extends Activity
         //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
         if(s.length() > enemyString.length()) {
             return;
-
         }
 
         if (enemyString.getText().toString().substring(0, s.length())
@@ -307,7 +317,7 @@ public class BattleActivity extends Activity
                 //全部打ち終わったら文字を切り替える
                 userInputText.setText("");
                 //プレイヤー側の攻撃処理
-                enemyLife -= playerPow;
+                enemyLifeGauge.setProgress(enemyLife -= playerPow);
                 //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                 if (enemyLife <= 0) {
                     if (battleCount < maxBattleCount - 1) {
@@ -352,6 +362,7 @@ public class BattleActivity extends Activity
         if (playerLife <= 0) {
             goToResult(false);
         }
+        playerLifeGauge.setProgress(playerLife);
 
     }
     public class Task1 extends TimerTask {

@@ -7,9 +7,20 @@
     <ImageView
         android:id="@+id/image_stage_background"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:src="@drawable/flick_background"
         android:scaleType="fitStart"
+        />
+
+    <ProgressBar
+        android:id="@+id/player_life_gauge"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="270dp"
         />
 
     <RelativeLayout
@@ -17,11 +28,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         >
+        <ProgressBar
+            android:id="@+id/enemy_life_gauge"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp" />
 
         <ImageView
             android:id="@+id/enemy_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/enemy_life_gauge"
             android:layout_centerHorizontal="true"/>
 
         <SurfaceView
