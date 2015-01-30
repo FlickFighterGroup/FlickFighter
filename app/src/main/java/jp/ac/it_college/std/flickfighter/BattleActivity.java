@@ -153,7 +153,7 @@ public class BattleActivity extends Activity
         m.setTranslate(100, marginHeight);
         enemyImage.setImageMatrix(m);
 */
-        Log.d("backgroundHeight: ", String.valueOf(stageBackgroundView.getHeight()));;
+        Log.d("backgroundHeight: ", String.valueOf(stageBackgroundView.getHeight()));
 
         super.onWindowFocusChanged(hasFocus);
     }
