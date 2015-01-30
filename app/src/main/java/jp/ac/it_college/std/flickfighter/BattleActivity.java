@@ -61,7 +61,8 @@ public class BattleActivity extends Activity
     private boolean no_damage = true;
     //TODO:変数名要変更
     private int maxBattleCount = 5;
-    private int battleCount = 1;
+    private int battleCount = 0;
+    private TextView battleCountView;
 
     private TextView enemyString;
     private int enemyLife;
@@ -80,6 +81,8 @@ public class BattleActivity extends Activity
         playerDefence = playerStatus.getInt("defenceLevel", 0);
         playerLife = playerStatus.getInt("lifeLevel", 5);
 
+        battleCountView = (TextView) findViewById(R.id.battle_count);
+        battleCountView.setText(battleCount + " / " + maxBattleCount);
         //敵キャラ表示
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
@@ -134,7 +137,7 @@ public class BattleActivity extends Activity
         stageBackgroundView.setLayoutParams(imgLayoutParams);
 
         // 敵の画像などの表示位置を端末のウィンドウサイズに合わせて変更
-        int marginHeight = stageBackgroundView.getHeight() / 2;
+        int marginHeight = stageBackgroundView.getHeight() / 5;
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) findViewById(R.id.layout_enemy_box)
                         .getLayoutParams();
@@ -213,6 +216,7 @@ public class BattleActivity extends Activity
     public void gameStop() {
         textBox.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
+
     }
 
     public void goToResult(boolean clear) {
@@ -238,6 +242,9 @@ public class BattleActivity extends Activity
     }
 
     public void enemySummon() {
+        battleCount++;
+        battleCountView.setText(battleCount + " / 5");
+
 /*        //敵キャラ表示
         enemyImage = (ImageView) findViewById(R.id.enemy_image);*/
         //表示と同時に敵キャラのIdを設定
@@ -254,6 +261,9 @@ public class BattleActivity extends Activity
     }
 
     public void bossSummon() {
+        battleCount++;
+        battleCountView.setText(battleCount + " / 5");
+
         ImageView bossImage = (ImageView) findViewById(R.id.enemy_image);
 
         int bossId = stageId - 1;
@@ -300,16 +310,15 @@ public class BattleActivity extends Activity
                 enemyLife -= playerPow;
                 //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                 if (enemyLife <= 0) {
-                    if (battleCount < maxBattleCount) {
+                    if (battleCount < maxBattleCount - 1) {
                         //TODO:敵が消えるアニメーションを追加する
                         enemySummon();
-                    } else if (battleCount == maxBattleCount) {
+                    } else if (battleCount == maxBattleCount - 1) {
                         bossSummon();
                     } else {
                         gameStop();
                         goToResult(true);
                     }
-                    battleCount++;
                 }
                 randomStringView();
                 // リミットタイムをリセットする

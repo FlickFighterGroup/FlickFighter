@@ -31,6 +31,7 @@ public class ChallengeFragment extends Fragment
     private int[] img =  {
             R.drawable.true_img
             ,R.drawable.false_img
+            ,R.drawable.sankaku
     };
     private ImageSwitcher challenge1, challenge2, challenge3;
 
@@ -75,8 +76,9 @@ public class ChallengeFragment extends Fragment
     private void checkChallenge() {
         SharedPreferences.Editor editor = playerStatus.edit();
         if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < STIPULATED_TIME) {
-            challenge1.setImageResource(img[0]);
+            challenge1.setImageResource(img[2]);
             if (mChallenge1) {
+                challenge1.setImageResource(img[0]);
                 editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
                         .putBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, true)
                         .apply();
@@ -86,16 +88,21 @@ public class ChallengeFragment extends Fragment
         }
 
         if (mChallenge2) {
-            challenge2.setImageResource(img[0]);
-            editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
-                    .apply();
+            challenge2.setImageResource(img[2]);
+            if(!playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_DAMAGE, false)) {
+                challenge2.setImageResource(img[0]);
+                editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
+                        .putBoolean(stageId + BattleActivity.PREF_NO_DAMAGE, true)
+                        .apply();
+            }
         } else {
             challenge2.setImageResource(img[1]);
         }
 
         if (mChallenge3) {
-            challenge3.setImageResource(img[0]);
+            challenge3.setImageResource(img[2]);
             if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, false)) {
+                challenge1.setImageResource(img[0]);
                 editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
                         .putBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, true)
                         .apply();
