@@ -120,34 +120,22 @@ public class BattleActivity extends Activity
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
         Log.d("hasFocus:", String.valueOf(hasFocus));
 
         //バトル画面のレイアウトサイズを取得
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         RelativeLayout.LayoutParams imgLayoutParams =
                 new RelativeLayout.LayoutParams(rootLayout.getWidth(), rootLayout.getHeight() / 2);
-
-        //ステージ背景画像
-        ImageView stageBackgroundView =
-                (ImageView) findViewById(R.id.image_stage_background);
-
-        stageBackgroundView.setLayoutParams(imgLayoutParams);
+        Log.d("rootLayoutHeight: ", String.valueOf(imgLayoutParams.height));
 
         // 敵の画像などの表示位置を端末のウィンドウサイズに合わせて変更
-        int marginHeight = stageBackgroundView.getHeight() / 2;
+        int marginHeight = imgLayoutParams.height / 2;
         ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) findViewById(R.id.layout_enemy_box)
+                (ViewGroup.MarginLayoutParams) findViewById(R.id.enemy_image)
                         .getLayoutParams();
         layoutParams.setMargins(0, marginHeight, 0, 0);
 
-/*
-        Matrix m = new Matrix();
-        m.setTranslate(100, marginHeight);
-        enemyImage.setImageMatrix(m);
-*/
-        Log.d("backgroundHeight: ", String.valueOf(stageBackgroundView.getHeight()));;
-
-        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override

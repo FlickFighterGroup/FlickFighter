@@ -1,69 +1,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/root_layout"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/image_stage_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/flick_background"
-        android:scaleType="fitStart"
-        />
+        android:scaleType="fitXY"
+        android:src="@drawable/flick_background" />
 
-    <RelativeLayout
-        android:id="@+id/layout_enemy_box"
+    <ImageView
+        android:id="@+id/enemy_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
+        android:layout_centerHorizontal="true" />
 
-        <ImageView
-            android:id="@+id/enemy_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+    <SurfaceView
+        android:id="@+id/limit_time_bar"
+        android:layout_width="150dp"
+        android:layout_height="10dp"
+        android:layout_below="@id/enemy_image"
+        android:layout_centerHorizontal="true"
+        android:background="#00FF00" />
 
-        <SurfaceView
-            android:id="@+id/limit_time_bar"
-            android:layout_width="150dp"
-            android:layout_height="10dp"
-            android:layout_below="@id/enemy_image"
-            android:background="#00FF00"
-            android:layout_centerHorizontal="true"/>
+    <LinearLayout
+        android:id="@+id/text_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#77000000"
+        android:layout_alignTop="@id/enemy_image"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/text_box"
+        <EditText
+            android:id="@+id/userInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#77000000">
+            android:background="#00000000"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="#FFF"
+            android:textSize="30dp" />
 
-            <EditText
-                android:id="@+id/userInputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30dp"
-                android:textColor="#FFF"
-                android:singleLine="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:background="#00000000" />
+        <TextView
+            android:id="@+id/enemyString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="30dp" />
 
-            <TextView
-                android:id="@+id/enemyString"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:gravity="center"
-                android:textSize="30dp"
-                />
+    </LinearLayout>
 
-        </LinearLayout>
-
-
-    </RelativeLayout>
 
     <Button
         android:id="@+id/keyBoardShownButton"
@@ -76,11 +66,11 @@
         android:id="@+id/timer_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="00:00"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:text="00:00"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
