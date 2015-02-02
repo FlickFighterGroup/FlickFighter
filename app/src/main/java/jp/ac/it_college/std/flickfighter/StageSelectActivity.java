@@ -2,19 +2,38 @@ package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class StageSelectActivity extends Activity{
+
+    private static final String STAGE_CLEAR = "stage_clear";
     public static final String STAGE_ID = "stageId";
+    private ImageView clearLabel;
+    private SharedPreferences playerStatus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stageselect);
+
+        playerStatus = getSharedPreferences("status", Context.MODE_PRIVATE);
+
+        //img_clear_labelをステージの数だけ回してIDをそれぞれ取得し、クリアしてれば画像を表示
+        for (int i = 1; i < 10; i++) {
+            int viewId = getResources().getIdentifier("img_clear_label" + i, "id", getPackageName());
+            clearLabel = (ImageView) findViewById(viewId);
+            if (playerStatus.getBoolean(i + STAGE_CLEAR, false)) {
+                clearLabel.setImageResource(R.drawable.true_img);
+            }
+        }
     }
 
     public void goToBattle(final int stageId, String stageName){
