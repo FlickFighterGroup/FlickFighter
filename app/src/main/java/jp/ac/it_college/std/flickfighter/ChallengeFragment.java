@@ -18,12 +18,15 @@ public class ChallengeFragment extends Fragment
     public static final String CHALLENGE_CLEAR_WITHIN_3MIN = "clear_within_3min";
     public static final String CHALLENGE_CLEAR_NO_DAMAGE = "no_damage";
     public static final String CHALLENGE_CLEAR_RARE_CRUSHING = "rare_crushing";
+    private static final String STAGE_CLEAR = "stage_clear";
 
     private boolean mChallenge1;
     private boolean mChallenge2;
     private boolean mChallenge3;
 
     private SharedPreferences playerStatus;
+    private SharedPreferences.Editor editor;
+
     private int stageId;
     public static final String PREF_POINT = "point";
     //規定時間
@@ -49,7 +52,9 @@ public class ChallengeFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         playerStatus = getActivity().getSharedPreferences("status", Context.MODE_PRIVATE);
+        editor = playerStatus.edit();
         stageId = getActivity().getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        editor.putBoolean(stageId + STAGE_CLEAR, true).apply();
         if (getArguments() != null) {
             mChallenge1 = getArguments().getBoolean(CHALLENGE_CLEAR_WITHIN_3MIN);
             mChallenge2 = getArguments().getBoolean(CHALLENGE_CLEAR_NO_DAMAGE);
@@ -74,7 +79,6 @@ public class ChallengeFragment extends Fragment
     }
 
     private void checkChallenge() {
-        SharedPreferences.Editor editor = playerStatus.edit();
         if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < STIPULATED_TIME) {
             challenge1.setImageResource(img[2]);
             if (mChallenge1) {
