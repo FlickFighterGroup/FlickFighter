@@ -18,6 +18,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     private static final String LIFE = "lifeLevel";
     private static final String POINT = "point";
 
+    private TextView pointView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,9 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
         playerStatus = getSharedPreferences("status", MODE_PRIVATE);
         statusDisplay(); //ステータスの状態を表示
+        pointView = (TextView) findViewById(R.id.point_view_label);
+        //現在のポイントを表示
+        pointView.setText(String.valueOf(playerStatus.getInt(POINT, 0)));
     }
 
     public void goToStageSelect(View v){

@@ -1,6 +1,5 @@
 package jp.ac.it_college.std.flickfighter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -56,7 +55,7 @@ public class ChallengeFragment extends Fragment
         stageId = getActivity().getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         editor.putBoolean(stageId + STAGE_CLEAR, true).apply();
         if (getArguments() != null) {
-            mChallenge1 = getArguments().getLong(CHALLENGE_CLEAR_WITHIN_3MIN) < 180 * 1000;
+            mChallenge1 = getArguments().getLong(CHALLENGE_CLEAR_WITHIN_3MIN) < STIPULATED_TIME;
             mChallenge2 = getArguments().getBoolean(CHALLENGE_CLEAR_NO_DAMAGE);
             mChallenge3 = getArguments().getBoolean(CHALLENGE_CLEAR_RARE_CRUSHING);
         }
