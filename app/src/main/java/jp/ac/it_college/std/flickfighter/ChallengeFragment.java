@@ -56,7 +56,7 @@ public class ChallengeFragment extends Fragment
         stageId = getActivity().getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
         editor.putBoolean(stageId + STAGE_CLEAR, true).apply();
         if (getArguments() != null) {
-            mChallenge1 = getArguments().getBoolean(CHALLENGE_CLEAR_WITHIN_3MIN);
+            mChallenge1 = getArguments().getLong(CHALLENGE_CLEAR_WITHIN_3MIN) < 180 * 1000;
             mChallenge2 = getArguments().getBoolean(CHALLENGE_CLEAR_NO_DAMAGE);
             mChallenge3 = getArguments().getBoolean(CHALLENGE_CLEAR_RARE_CRUSHING);
         }
@@ -79,9 +79,9 @@ public class ChallengeFragment extends Fragment
     }
 
     private void checkChallenge() {
-        if (playerStatus.getLong(BattleActivity.PREF_CLEAR_TIME, -1) < STIPULATED_TIME) {
+        if (mChallenge1) {
             challenge1.setImageResource(img[2]);
-            if (mChallenge1) {
+            if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)) {
                 challenge1.setImageResource(img[0]);
                 editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
                         .putBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, true)
