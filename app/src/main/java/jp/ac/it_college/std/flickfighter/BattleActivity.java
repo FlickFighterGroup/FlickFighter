@@ -6,25 +6,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,7 +32,7 @@ import java.util.TimerTask;
 
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener{
-    //TODO:バトル数左上に表示しろ
+    //TODO:バトル数左上に表示しろ ー＞　完了？
     //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
     private int playerDefence;
@@ -56,17 +54,19 @@ public class BattleActivity extends Activity
     public static final String PREF_CLEAR_TIME = "clear_time";
     public static final String PREF_NO_DAMAGE = "no_damage";
     public static final String PREF_CLEAR_JUDGE = "clearJudge";
+    private ProgressBar playerLifeGauge;
     //フラグいろいろ
     private boolean rareFrag = false;
     private boolean no_damage = true;
     //TODO:変数名要変更
     private int maxBattleCount = 5;
-    private int battleCount = 1;
+    private int battleCount = 0;
+    private TextView battleCountView;
 
     private TextView enemyString;
     private int enemyLife;
     private int enemyPow;
-
+    private ProgressBar enemyLifeGauge;
     private ImageView enemyImage;
 
     @Override
@@ -80,7 +80,15 @@ public class BattleActivity extends Activity
         playerDefence = playerStatus.getInt("defenceLevel", 0);
         playerLife = playerStatus.getInt("lifeLevel", 5);
 
+        //プレイヤーの体力ゲージ表示
+        playerLifeGauge = (ProgressBar) findViewById(R.id.player_life_gauge);
+        playerLifeGauge.setMax(playerLife);
+        playerLifeGauge.setProgress(playerLife);
+
+        battleCountView = (TextView) findViewById(R.id.battle_count);
+        battleCountView.setText(battleCount + " / " + maxBattleCount);
         //敵キャラ表示
+        enemyLifeGauge = (ProgressBar)findViewById(R.id.enemy_life_gauge);
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
         enemySummon();
@@ -120,22 +128,34 @@ public class BattleActivity extends Activity
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
         Log.d("hasFocus:", String.valueOf(hasFocus));
 
         //バトル画面のレイアウトサイズを取得
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
         RelativeLayout.LayoutParams imgLayoutParams =
                 new RelativeLayout.LayoutParams(rootLayout.getWidth(), rootLayout.getHeight() / 2);
-        Log.d("rootLayoutHeight: ", String.valueOf(imgLayoutParams.height));
+
+        //ステージ背景画像
+        ImageView stageBackgroundView =
+                (ImageView) findViewById(R.id.image_stage_background);
+
+        stageBackgroundView.setLayoutParams(imgLayoutParams);
 
         // 敵の画像などの表示位置を端末のウィンドウサイズに合わせて変更
-        int marginHeight = imgLayoutParams.height / 2;
+        int marginHeight = stageBackgroundView.getHeight() / 5;
         ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) findViewById(R.id.enemy_image)
+                (ViewGroup.MarginLayoutParams) findViewById(R.id.layout_enemy_box)
                         .getLayoutParams();
         layoutParams.setMargins(0, marginHeight, 0, 0);
 
+/*
+        Matrix m = new Matrix();
+        m.setTranslate(100, marginHeight);
+        enemyImage.setImageMatrix(m);
+*/
+        Log.d("backgroundHeight: ", String.valueOf(stageBackgroundView.getHeight()));
+
+        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -201,6 +221,7 @@ public class BattleActivity extends Activity
     public void gameStop() {
         textBox.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
+
     }
 
     public void goToResult(boolean clear) {
@@ -226,6 +247,9 @@ public class BattleActivity extends Activity
     }
 
     public void enemySummon() {
+        battleCount++;
+        battleCountView.setText(battleCount + " / 5");
+
 /*        //敵キャラ表示
         enemyImage = (ImageView) findViewById(R.id.enemy_image);*/
         //表示と同時に敵キャラのIdを設定
@@ -239,15 +263,24 @@ public class BattleActivity extends Activity
         }
         enemyLife = EnemyInfo.enemyLifeSetting(enemyId);
         enemyPow = EnemyInfo.enemyPowSetting(enemyId);
+
+        enemyLifeGauge.setMax(enemyLife);
+        enemyLifeGauge.setProgress(enemyLife);
     }
 
     public void bossSummon() {
+        battleCount++;
+        battleCountView.setText(battleCount + " / 5");
+
         ImageView bossImage = (ImageView) findViewById(R.id.enemy_image);
 
         int bossId = stageId - 1;
         bossImage.setImageResource(EnemyInfo.bossPath[bossId]);
         enemyLife = EnemyInfo.bossLifeSetting(bossId);
         enemyLife = EnemyInfo.bossPowSetting(bossId);
+
+        enemyLifeGauge.setMax(enemyLife);
+        enemyLifeGauge.setProgress(enemyLife);
     }
 
     public void enemyAnimation(ImageView view) {
@@ -275,7 +308,6 @@ public class BattleActivity extends Activity
         //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
         if(s.length() > enemyString.length()) {
             return;
-
         }
 
         if (enemyString.getText().toString().substring(0, s.length())
@@ -285,19 +317,18 @@ public class BattleActivity extends Activity
                 //全部打ち終わったら文字を切り替える
                 userInputText.setText("");
                 //プレイヤー側の攻撃処理
-                enemyLife -= playerPow;
+                enemyLifeGauge.setProgress(enemyLife -= playerPow);
                 //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                 if (enemyLife <= 0) {
-                    if (battleCount < maxBattleCount) {
+                    if (battleCount < maxBattleCount - 1) {
                         //TODO:敵が消えるアニメーションを追加する
                         enemySummon();
-                    } else if (battleCount == maxBattleCount) {
+                    } else if (battleCount == maxBattleCount - 1) {
                         bossSummon();
                     } else {
                         gameStop();
                         goToResult(true);
                     }
-                    battleCount++;
                 }
                 randomStringView();
                 // リミットタイムをリセットする
@@ -331,6 +362,7 @@ public class BattleActivity extends Activity
         if (playerLife <= 0) {
             goToResult(false);
         }
+        playerLifeGauge.setProgress(playerLife);
 
     }
     public class Task1 extends TimerTask {
