@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -104,10 +103,6 @@ public class BattleActivity extends Activity
         timer.scheduleAtFixedRate(timerTask, 0, 100);
 
         textBox = (LinearLayout) findViewById(R.id.text_box);
-
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
-        );
     }
 
     @Override
