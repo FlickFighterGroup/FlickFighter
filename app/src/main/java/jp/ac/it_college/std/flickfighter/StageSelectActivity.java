@@ -27,11 +27,18 @@ public class StageSelectActivity extends Activity{
         playerStatus = getSharedPreferences("status", Context.MODE_PRIVATE);
 
         //img_clear_labelをステージの数だけ回してIDをそれぞれ取得し、クリアしてれば画像を表示
-        for (int i = 1; i < 10; i++) {
-            int viewId = getResources().getIdentifier("img_clear_label" + i, "id", getPackageName());
+        for (int stageId = 1; stageId <= 10; stageId++) {
+            int viewId = getResources().getIdentifier("img_clear_label" + stageId, "id", getPackageName());
             clearLabel = (ImageView) findViewById(viewId);
-            if (playerStatus.getBoolean(i + STAGE_CLEAR, false)) {
-                clearLabel.setImageResource(R.drawable.true_img);
+
+            if (playerStatus.getBoolean(stageId + STAGE_CLEAR, false)) {
+                if (playerStatus.getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)
+                         && playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_DAMAGE, false)
+                         && playerStatus.getBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, false)) {
+                    clearLabel.setImageResource(R.drawable.true_img);
+                } else {
+                    clearLabel.setImageResource(R.drawable.sankaku);
+                }
             }
         }
     }

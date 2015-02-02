@@ -31,9 +31,9 @@ public class ResultActivity extends Activity
             //各チャレンジの成功・失敗判定をBundleにput
             Bundle challengeFrag = new Bundle();
             //クリアタイム
-            challengeFrag.putBoolean(
+            challengeFrag.putLong(
                     ChallengeFragment.CHALLENGE_CLEAR_WITHIN_3MIN,
-                    getIntent().getBooleanExtra(BattleActivity.PREF_CLEAR_TIME, false));
+                    getIntent().getLongExtra(BattleActivity.PREF_CLEAR_TIME, 180 * 1000));
 
             challengeFrag.putBoolean(
                     ChallengeFragment.CHALLENGE_CLEAR_NO_DAMAGE,
