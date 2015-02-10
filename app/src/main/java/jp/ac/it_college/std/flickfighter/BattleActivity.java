@@ -29,9 +29,10 @@ import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener
-        , DetectableKeyboardEventLayout.KeyboardListener{
+        , DetectableKeyboard.OnKeyboardVisibilityListener {
     //TODO:バトル数左上に表示しろ ー＞　完了？
     //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
@@ -48,7 +49,7 @@ public class BattleActivity extends Activity
     private TextView timerLabel;
     //intentで渡すフィールド
     private int stageId;
-    private long currentTime = 0 ;
+    private long currentTime = 0;
     //getIntentで使う定数
     public static final String PREF_RARE_CRUSHING = "rare_crushing";
     public static final String PREF_CLEAR_TIME = "clear_time";
@@ -90,7 +91,7 @@ public class BattleActivity extends Activity
         battleCountView = (TextView) findViewById(R.id.battle_count);
         battleCountView.setText(battleCount + " / " + maxBattleCount);
         //敵キャラ表示
-        enemyLifeGauge = (ProgressBar)findViewById(R.id.enemy_life_gauge);
+        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
         enemySummon();
@@ -117,8 +118,7 @@ public class BattleActivity extends Activity
         userInputText.addTextChangedListener(this);
 
         //キーボードの表示・非表示を検出するリスナーをセット
-        ((DetectableKeyboardEventLayout) findViewById(R.id.root_layout))
-                .setKeyboardListener(this);
+        new DetectableKeyboard(this).setKeyboardListener(this);
 
         //キーボード表示ボタンのonClickListener
         mKeyBoardShownButton = (Button) findViewById(R.id.keyBoardShownButton);
@@ -164,7 +164,7 @@ public class BattleActivity extends Activity
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         //エンターキー押下時の処理を無効にする
-        if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -294,7 +294,7 @@ public class BattleActivity extends Activity
                 " count:" + String.valueOf(count));
 
         //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
-        if(s.length() > enemyString.length()) {
+        if (s.length() > enemyString.length()) {
             return;
         }
 
@@ -323,8 +323,8 @@ public class BattleActivity extends Activity
                 limitTimeSurfaceView.resetLimitTime();
             } else {
                 //文字列が一致すれば色を変える
-                String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) +
-                        "</font>" + text.substring(s.length(), text.length()) ;
+                String txtStr = "<font color=#00ff00>" + text.substring(0, s.length()) +
+                        "</font>" + text.substring(s.length(), text.length());
                 enemyString.setText(Html.fromHtml(txtStr));
             }
         }
@@ -354,28 +354,36 @@ public class BattleActivity extends Activity
 
     }
 
-    /** implemented KeyboardListener */
+    /** implemented OnKeyboardVisibilityListener */
     @Override
-    public void onKeyboardShown() {
-        /* キーボード表示時の処理をここに書く */
+    public void onVisibilityChanged(boolean isVisible) {
+        if (isVisible) {
+            /* キーボード表示時の処理をここに書く */
 
-        //キーボード表示ボタンのサイズを変更
-        mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                0, 0));
-        //キーボード表示ボタンを非表示する
-        mKeyBoardShownButton.setVisibility(View.INVISIBLE);
+            //キーボード表示ボタンのサイズを変更
+            mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
+                    0, 0));
+            //キーボード表示ボタンを非表示する
+            mKeyBoardShownButton.setVisibility(View.INVISIBLE);
+        } else {
+            /* キーボード非表示時の処理をここに書く */
+
+            //キーボード表示ボタンのサイズを変更
+            mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            //キーボード表示ボタンを表示する
+            mKeyBoardShownButton.setVisibility(View.VISIBLE);
+        }
+
+        Log.d("isVisible", String.valueOf(isVisible));
     }
 
     @Override
-    public void onKeyboardHidden() {
-        /* キーボード非表示時の処理をここに書く */
-
-        //キーボード表示ボタンのサイズを変更
-        mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        //キーボード表示ボタンを表示する
-        mKeyBoardShownButton.setVisibility(View.VISIBLE);
+    public void onSuggestVisibilityChanged(int marginHeight) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) findViewById(R.id.footer).getLayoutParams();
+        layoutParams.setMargins(0, marginHeight, 0, 0);
     }
 
     public class Task1 extends TimerTask {

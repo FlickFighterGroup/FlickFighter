@@ -1,4 +1,4 @@
-<jp.ac.it_college.std.flickfighter.DetectableKeyboardEventLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -66,9 +66,9 @@
         android:layout_marginRight="10dp" />
 
     <LinearLayout
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="vertical"
         >
 
@@ -109,4 +109,4 @@
         android:text="1 / 5"
         android:textSize="30dp" />
 
-</jp.ac.it_college.std.flickfighter.DetectableKeyboardEventLayout>
+</RelativeLayout>
