@@ -1,11 +1,13 @@
 package jp.ac.it_college.std.flickfighter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -355,35 +357,30 @@ public class BattleActivity extends Activity
     }
 
     /** implemented OnKeyboardVisibilityListener */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onVisibilityChanged(boolean isVisible) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) playerLifeGauge.getLayoutParams();
+
         if (isVisible) {
             /* キーボード表示時の処理をここに書く */
 
-            //キーボード表示ボタンのサイズを変更
-            mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                    0, 0));
-            //キーボード表示ボタンを非表示する
-            mKeyBoardShownButton.setVisibility(View.INVISIBLE);
+            //プレイヤーライフの表示位置固定を解除
+            layoutParams.removeRule(RelativeLayout.ABOVE);
         } else {
             /* キーボード非表示時の処理をここに書く */
 
-            //キーボード表示ボタンのサイズを変更
-            mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            //キーボード表示ボタンを表示する
-            mKeyBoardShownButton.setVisibility(View.VISIBLE);
+            //プレイヤーライフゲージの表示位置をキーボード表示ボタンの上に固定
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.keyBoardShownButton);
         }
-
-        Log.d("isVisible", String.valueOf(isVisible));
     }
 
     @Override
     public void onSuggestVisibilityChanged(int marginHeight) {
         ViewGroup.MarginLayoutParams layoutParams =
-                (ViewGroup.MarginLayoutParams) findViewById(R.id.footer).getLayoutParams();
-        layoutParams.setMargins(0, marginHeight, 0, 0);
+                (ViewGroup.MarginLayoutParams) playerLifeGauge.getLayoutParams();
+        layoutParams.setMargins(0, marginHeight - playerLifeGauge.getHeight(), 0, 0);
     }
 
     public class Task1 extends TimerTask {

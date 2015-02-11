@@ -65,28 +65,21 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
 
-    <LinearLayout
-        android:id="@+id/footer"
+    <Button
+        android:id="@+id/keyBoardShownButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_alignParentBottom="true"
+        android:text="キーボードを表示" />
 
-        <ProgressBar
-            android:id="@+id/player_life_gauge"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+    <ProgressBar
+        android:id="@+id/player_life_gauge"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        />
 
-        <Button
-            android:id="@+id/keyBoardShownButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="キーボードを表示"
-            android:visibility="gone" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/timer_label"
