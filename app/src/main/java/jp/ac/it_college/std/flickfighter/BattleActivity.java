@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +47,7 @@ public class BattleActivity extends Activity
     private String TAG = "BattleActivity";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
+    private SurfaceView limitTimeBar;
     private Handler mHandler;
     //Timer初期化
     private TextView timerLabel;
@@ -74,6 +76,10 @@ public class BattleActivity extends Activity
     //キーボード表示ボタン
     private Button mKeyBoardShownButton;
 
+    //タイマー用フィールド
+    private Timer timer;
+    private TimerTask timerTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,19 +106,11 @@ public class BattleActivity extends Activity
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
-        // タイマーをセット
-        Timer timer = new Timer();
-        TimerTask timerTask = new Task1();
-        timer.scheduleAtFixedRate(timerTask, 0, 100);
 
         textBox = (LinearLayout) findViewById(R.id.text_box);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         mHandler = new Handler(getMainLooper());
-        SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
+        limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
         limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, mHandler, this);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
@@ -131,6 +129,37 @@ public class BattleActivity extends Activity
                         keyBoardShown();
                     }
                 });
+
+        gameReady();
+    }
+
+    private void gameReady() {
+        Animation animation = new AlphaAnimation(0.0f, 1.0f);
+        animation.setDuration(3000);
+        animation.setFillAfter(true);
+        enemyImage.startAnimation(animation);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // タイマーをセット
+                timer = new Timer();
+                timerTask = new Task1();
+                timer.scheduleAtFixedRate(timerTask, 0, 100);
+                gameStart();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     @Override
@@ -148,19 +177,6 @@ public class BattleActivity extends Activity
         layoutParams.setMargins(0, marginHeight, 0, 0);
 
         super.onWindowFocusChanged(hasFocus);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        limitTimeSurfaceView.resetLimitTime();
-        gameStart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        gameStop();
     }
 
     @Override
@@ -205,13 +221,17 @@ public class BattleActivity extends Activity
 
     public void gameStart() {
         textBox.setVisibility(View.VISIBLE);
+        enemyLifeGauge.setVisibility(View.VISIBLE);
+        limitTimeBar.setVisibility(View.VISIBLE);
+        userInputText.requestFocus();
         limitTimeSurfaceView.startMeasurement();
     }
 
     public void gameStop() {
         textBox.setVisibility(View.INVISIBLE);
+        enemyLifeGauge.setVisibility(View.INVISIBLE);
+        limitTimeBar.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
-
     }
 
     public void goToResult(boolean clear) {
@@ -347,7 +367,6 @@ public class BattleActivity extends Activity
                 enemyAnimation((ImageView) findViewById(R.id.enemy_image));
             }
         });
-        gameStart();
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
         if (playerLife <= 0) {
             goToResult(false);
