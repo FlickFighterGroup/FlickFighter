@@ -54,6 +54,7 @@
                     android:id="@+id/button_stage1"
                     android:onClick="stageSelect"
                     android:text="STAGE 1"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -75,6 +76,7 @@
                     android:id="@+id/button_stage2"
                     android:onClick="stageSelect"
                     android:text="STAGE 2"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -95,6 +97,7 @@
                     android:id="@+id/button_stage3"
                     android:onClick="stageSelect"
                     android:text="STAGE 3"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -116,6 +119,7 @@
                     android:id="@+id/button_stage4"
                     android:onClick="stageSelect"
                     android:text="STAGE 4"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -137,6 +141,7 @@
                     android:id="@+id/button_stage5"
                     android:onClick="stageSelect"
                     android:text="STAGE 5"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -158,6 +163,7 @@
                     android:id="@+id/button_stage6"
                     android:onClick="stageSelect"
                     android:text="STAGE 6"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -179,6 +185,7 @@
                     android:id="@+id/button_stage7"
                     android:onClick="stageSelect"
                     android:text="STAGE 7"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -200,6 +207,7 @@
                     android:id="@+id/button_stage8"
                     android:onClick="stageSelect"
                     android:text="STAGE 8"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -221,6 +229,7 @@
                     android:id="@+id/button_stage9"
                     android:onClick="stageSelect"
                     android:text="STAGE 9"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
@@ -242,6 +251,7 @@
                     android:id="@+id/button_stage10"
                     android:onClick="stageSelect"
                     android:text="STAGE 10"
+                    android:background="@drawable/stone_wall"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
 
