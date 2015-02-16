@@ -38,8 +38,6 @@ import java.util.TimerTask;
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener
         , DetectableKeyboard.OnKeyboardVisibilityListener {
-    //TODO:バトル数左上に表示しろ ー＞　完了？
-    //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
     private int playerDefence;
     private int playerLife;
@@ -260,10 +258,6 @@ public class BattleActivity extends Activity
     public void enemySummon() {
         battleCount++;
         battleCountView.setText(battleCount + " / 5");
-
-/*        //敵キャラ表示
-        enemyImage = (ImageView) findViewById(R.id.enemy_image);*/
-        //表示と同時に敵キャラのIdを設定
 
         int enemyId;
         enemyImage.setImageResource(
