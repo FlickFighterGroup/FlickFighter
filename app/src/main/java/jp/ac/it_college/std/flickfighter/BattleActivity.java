@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -331,10 +333,9 @@ public class BattleActivity extends Activity
                 //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                 if (enemyLife <= 0) {
                     if (battleCount < maxBattleCount - 1) {
-                        //TODO:敵が消えるアニメーションを追加する
-                        enemySummon();
+                        enemyCrushingAnimation(enemyImage);
                     } else if (battleCount == maxBattleCount - 1) {
-                        bossSummon();
+                        enemyCrushingAnimation(enemyImage);
                     } else {
                         gameStop();
                         goToResult(true);
@@ -373,6 +374,79 @@ public class BattleActivity extends Activity
         }
         playerLifeGauge.setProgress(playerLife);
 
+    }
+
+    private void enemyCrushingAnimation(final View view) {
+        gameStop();
+
+        TranslateAnimation iterateAnimation = new TranslateAnimation(
+                -30, 30, 0, 0);
+        iterateAnimation.setRepeatMode(Animation.REVERSE);
+        iterateAnimation.setRepeatCount(4);
+        iterateAnimation.setDuration(250);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.f, 0.f);
+        alphaAnimation.setDuration(1000);
+
+        TranslateAnimation moveDownAnimation = new TranslateAnimation(
+                0,0, 0, 100);
+        moveDownAnimation.setDuration(1000);
+
+        AnimationSet animationSet = new AnimationSet(false);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(iterateAnimation);
+        animationSet.addAnimation(moveDownAnimation);
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (battleCount == maxBattleCount - 1) {
+                    bossSummon();
+                } else {
+                    enemySummon();
+                }
+                readyAnimation(view);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(animationSet);
+    }
+
+    private void readyAnimation(View view) {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0.f, 1.f);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, 0);
+
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.setDuration(1000);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(translateAnimation);
+
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                gameStart();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        view.startAnimation(animationSet);
     }
 
     /** implemented OnKeyboardVisibilityListener */
