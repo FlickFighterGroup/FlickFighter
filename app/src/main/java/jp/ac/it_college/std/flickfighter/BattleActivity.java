@@ -1,11 +1,13 @@
 package jp.ac.it_college.std.flickfighter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -16,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -29,9 +32,10 @@ import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 public class BattleActivity extends Activity
         implements TextWatcher, LimitTimeSurfaceView.EnemyActionListener
-        , DetectableKeyboardEventLayout.KeyboardListener{
+        , DetectableKeyboard.OnKeyboardVisibilityListener {
     //TODO:バトル数左上に表示しろ ー＞　完了？
     //TODO:敵のHPバーと自分のHPバー表示
     private int playerPow;
@@ -43,12 +47,13 @@ public class BattleActivity extends Activity
     private String TAG = "BattleActivity";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
+    private SurfaceView limitTimeBar;
     private Handler mHandler;
     //Timer初期化
     private TextView timerLabel;
     //intentで渡すフィールド
     private int stageId;
-    private long currentTime = 0 ;
+    private long currentTime = 0;
     //getIntentで使う定数
     public static final String PREF_RARE_CRUSHING = "rare_crushing";
     public static final String PREF_CLEAR_TIME = "clear_time";
@@ -71,6 +76,10 @@ public class BattleActivity extends Activity
     //キーボード表示ボタン
     private Button mKeyBoardShownButton;
 
+    //タイマー用フィールド
+    private Timer timer;
+    private TimerTask timerTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,26 +99,18 @@ public class BattleActivity extends Activity
         battleCountView = (TextView) findViewById(R.id.battle_count);
         battleCountView.setText(battleCount + " / " + maxBattleCount);
         //敵キャラ表示
-        enemyLifeGauge = (ProgressBar)findViewById(R.id.enemy_life_gauge);
+        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
         randomStringView();
         enemySummon();
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
-        // タイマーをセット
-        Timer timer = new Timer();
-        TimerTask timerTask = new Task1();
-        timer.scheduleAtFixedRate(timerTask, 0, 100);
 
         textBox = (LinearLayout) findViewById(R.id.text_box);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         mHandler = new Handler(getMainLooper());
-        SurfaceView limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
+        limitTimeBar = (SurfaceView) findViewById(R.id.limit_time_bar);
         limitTimeSurfaceView = new LimitTimeSurfaceView(limitTimeBar, mHandler, this);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         enemyString = (TextView) findViewById(R.id.enemyString);
@@ -117,8 +118,7 @@ public class BattleActivity extends Activity
         userInputText.addTextChangedListener(this);
 
         //キーボードの表示・非表示を検出するリスナーをセット
-        ((DetectableKeyboardEventLayout) findViewById(R.id.root_layout))
-                .setKeyboardListener(this);
+        new DetectableKeyboard(this).setKeyboardListener(this);
 
         //キーボード表示ボタンのonClickListener
         mKeyBoardShownButton = (Button) findViewById(R.id.keyBoardShownButton);
@@ -129,6 +129,37 @@ public class BattleActivity extends Activity
                         keyBoardShown();
                     }
                 });
+
+        gameReady();
+    }
+
+    private void gameReady() {
+        Animation animation = new AlphaAnimation(0.0f, 1.0f);
+        animation.setDuration(3000);
+        animation.setFillAfter(true);
+        enemyImage.startAnimation(animation);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // タイマーをセット
+                timer = new Timer();
+                timerTask = new Task1();
+                timer.scheduleAtFixedRate(timerTask, 0, 100);
+                gameStart();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     @Override
@@ -149,22 +180,9 @@ public class BattleActivity extends Activity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        limitTimeSurfaceView.resetLimitTime();
-        gameStart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        gameStop();
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         //エンターキー押下時の処理を無効にする
-        if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -203,13 +221,17 @@ public class BattleActivity extends Activity
 
     public void gameStart() {
         textBox.setVisibility(View.VISIBLE);
+        enemyLifeGauge.setVisibility(View.VISIBLE);
+        limitTimeBar.setVisibility(View.VISIBLE);
+        userInputText.requestFocus();
         limitTimeSurfaceView.startMeasurement();
     }
 
     public void gameStop() {
         textBox.setVisibility(View.INVISIBLE);
+        enemyLifeGauge.setVisibility(View.INVISIBLE);
+        limitTimeBar.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
-
     }
 
     public void goToResult(boolean clear) {
@@ -294,7 +316,7 @@ public class BattleActivity extends Activity
                 " count:" + String.valueOf(count));
 
         //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
-        if(s.length() > enemyString.length()) {
+        if (s.length() > enemyString.length()) {
             return;
         }
 
@@ -323,8 +345,8 @@ public class BattleActivity extends Activity
                 limitTimeSurfaceView.resetLimitTime();
             } else {
                 //文字列が一致すれば色を変える
-                String txtStr = "<font color=#00ff00>" + text.substring(0,s.length()) +
-                        "</font>" + text.substring(s.length(), text.length()) ;
+                String txtStr = "<font color=#00ff00>" + text.substring(0, s.length()) +
+                        "</font>" + text.substring(s.length(), text.length());
                 enemyString.setText(Html.fromHtml(txtStr));
             }
         }
@@ -345,7 +367,6 @@ public class BattleActivity extends Activity
                 enemyAnimation((ImageView) findViewById(R.id.enemy_image));
             }
         });
-        gameStart();
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
         if (playerLife <= 0) {
             goToResult(false);
@@ -354,28 +375,31 @@ public class BattleActivity extends Activity
 
     }
 
-    /** implemented KeyboardListener */
+    /** implemented OnKeyboardVisibilityListener */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public void onKeyboardShown() {
-        /* キーボード表示時の処理をここに書く */
+    public void onVisibilityChanged(boolean isVisible) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) playerLifeGauge.getLayoutParams();
 
-        //キーボード表示ボタンのサイズを変更
-        mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                0, 0));
-        //キーボード表示ボタンを非表示する
-        mKeyBoardShownButton.setVisibility(View.INVISIBLE);
+        if (isVisible) {
+            /* キーボード表示時の処理をここに書く */
+
+            //プレイヤーライフの表示位置固定を解除
+            layoutParams.removeRule(RelativeLayout.ABOVE);
+        } else {
+            /* キーボード非表示時の処理をここに書く */
+
+            //プレイヤーライフゲージの表示位置をキーボード表示ボタンの上に固定
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.keyBoardShownButton);
+        }
     }
 
     @Override
-    public void onKeyboardHidden() {
-        /* キーボード非表示時の処理をここに書く */
-
-        //キーボード表示ボタンのサイズを変更
-        mKeyBoardShownButton.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        //キーボード表示ボタンを表示する
-        mKeyBoardShownButton.setVisibility(View.VISIBLE);
+    public void onSuggestVisibilityChanged(int marginHeight) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) playerLifeGauge.getLayoutParams();
+        layoutParams.setMargins(0, marginHeight - playerLifeGauge.getHeight(), 0, 0);
     }
 
     public class Task1 extends TimerTask {
