@@ -217,7 +217,6 @@ public class BattleActivity extends Activity
 
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
