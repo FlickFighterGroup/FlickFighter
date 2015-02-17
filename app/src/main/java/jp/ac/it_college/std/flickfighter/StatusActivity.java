@@ -64,6 +64,7 @@ public class StatusActivity extends Activity implements View.OnClickListener{
                                     .apply();
                             statusDisplay();
                             Toast.makeText(getApplicationContext(), "レベルアップしました！", Toast.LENGTH_SHORT).show();
+                            pointView.setText(String.valueOf(playerStatus.getInt(POINT,0)));
                         } else {
                             Toast.makeText(getApplicationContext(), "ポイントが足りません！", Toast.LENGTH_SHORT).show();
                             return;
