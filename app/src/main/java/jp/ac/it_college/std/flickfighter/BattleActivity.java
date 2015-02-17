@@ -46,7 +46,6 @@ public class BattleActivity extends Activity
     private InputMethodManager inputMethodManager;
     private EditText userInputText;
     private LinearLayout textBox;
-    private String TAG = "BattleActivity";
     private String text;
     private LimitTimeSurfaceView limitTimeSurfaceView;
     private SurfaceView limitTimeBar;
