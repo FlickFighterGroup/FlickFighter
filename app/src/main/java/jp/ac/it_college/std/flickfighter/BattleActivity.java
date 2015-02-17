@@ -277,6 +277,7 @@ public class BattleActivity extends Activity
     private void gameEnd(final boolean isGameClear) {
         gameStop();
         battleBgm.stop();
+        timer.cancel();
 
         //ゲームオーバー用BGM
         mHandler.postDelayed(new Runnable() {
