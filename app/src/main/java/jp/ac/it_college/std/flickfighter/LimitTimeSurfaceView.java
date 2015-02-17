@@ -78,7 +78,12 @@ public class LimitTimeSurfaceView
                     drawLimitTime();
 
                     if (limitTime <= 0) {
-                        listener.enemyAttack();
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.enemyAttack();
+                            }
+                        });
                         resetLimitTime();
                     }
 
