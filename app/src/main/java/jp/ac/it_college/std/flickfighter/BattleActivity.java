@@ -7,13 +7,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -82,6 +84,20 @@ public class BattleActivity extends Activity
     private Timer timer;
     private TimerTask timerTask;
 
+    //効果音用
+    private SoundPool se;
+    private int damageSoundId;
+    private int attackSoundId;
+    private int enemyAdventSoundId;
+    private int enemyDownSoundId;
+    private int gameClearSoundId;
+    private int gameOverSoundId;
+
+    //BGM用
+    private MediaPlayer battleBgm;
+
+    private boolean gameIsRunning;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +148,15 @@ public class BattleActivity extends Activity
                     }
                 });
 
+        //効果音再生用SoundPool
+        se = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
+
+        //戦闘曲用MediaPlayer
+        battleBgm = MediaPlayer.create(this, R.raw.battle_bgm);
+        battleBgm.setLooping(true);
+        battleBgm.setVolume(0.3f, 0.3f);
+        battleBgm.start();
+
         gameReady();
     }
 
@@ -140,6 +165,14 @@ public class BattleActivity extends Activity
         animation.setDuration(3000);
         animation.setFillAfter(true);
         enemyImage.startAnimation(animation);
+
+        //効果音の読み込み
+        damageSoundId = se.load(this, R.raw.se_damage01, 1);
+        attackSoundId = se.load(this, R.raw.se_attack01, 1);
+        enemyAdventSoundId = se.load(this, R.raw.se_enemyadvent01, 1);
+        enemyDownSoundId = se.load(this, R.raw.se_enemydown01, 1);
+        gameClearSoundId = se.load(this, R.raw.se_gameclear01, 1);
+        gameOverSoundId = se.load(this, R.raw.se_gameover01, 1);
 
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -165,8 +198,16 @@ public class BattleActivity extends Activity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        //SoundPoolの開放
+        se.release();
+        battleBgm.stop();
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        Log.d("hasFocus:", String.valueOf(hasFocus));
+        super.onWindowFocusChanged(hasFocus);
 
         //バトル画面のレイアウトサイズを取得
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.root_layout);
@@ -178,7 +219,6 @@ public class BattleActivity extends Activity
                         .getLayoutParams();
         layoutParams.setMargins(0, marginHeight, 0, 0);
 
-        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -221,6 +261,7 @@ public class BattleActivity extends Activity
     }
 
     public void gameStart() {
+        gameIsRunning = true;
         textBox.setVisibility(View.VISIBLE);
         enemyLifeGauge.setVisibility(View.VISIBLE);
         limitTimeBar.setVisibility(View.VISIBLE);
@@ -229,10 +270,36 @@ public class BattleActivity extends Activity
     }
 
     public void gameStop() {
+        gameIsRunning = false;
         textBox.setVisibility(View.INVISIBLE);
         enemyLifeGauge.setVisibility(View.INVISIBLE);
         limitTimeBar.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
+    }
+
+    private void gameEnd(final boolean isGameClear) {
+        gameStop();
+        battleBgm.stop();
+
+        //ゲームオーバー用BGM
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isGameClear) {
+                    se.play(gameClearSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                } else {
+                    se.play(gameOverSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                }
+            }
+        }, 1000);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                goToResult(isGameClear);
+            }
+        }, 5000);
+
     }
 
     public void goToResult(boolean clear) {
@@ -305,73 +372,70 @@ public class BattleActivity extends Activity
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        Log.d(TAG, "beforeTextChanged() s:" + s.toString() +
-                " start:" + String.valueOf(start) + " count:" + String.valueOf(count) +
-                " after:" + String.valueOf(after));
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.d(TAG, "onTextChanged() s:" + s.toString() +
-                " start:" + String.valueOf(start) + " before:" + String.valueOf(before) +
-                " count:" + String.valueOf(count));
-
         //入力された文字の長さがenemyStringより長い場合はメソッドを抜ける
         if (s.length() > enemyString.length()) {
             return;
         }
 
-        if (enemyString.getText().toString().substring(0, s.length())
-                .equals(s.toString().substring(0, s.length()))) {
-            Log.d("judge", String.valueOf(true));
-            if (enemyString.getText().length() == s.length()) {
-                //全部打ち終わったら文字を切り替える
-                userInputText.setText("");
-                //プレイヤー側の攻撃処理
-                enemyLifeGauge.setProgress(enemyLife -= playerPow);
-                //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
-                if (enemyLife <= 0) {
-                    if (battleCount < maxBattleCount - 1) {
-                        enemyCrushingAnimation(enemyImage);
-                    } else if (battleCount == maxBattleCount - 1) {
-                        enemyCrushingAnimation(enemyImage);
-                    } else {
-                        gameStop();
-                        goToResult(true);
+        if (gameIsRunning) {
+            if (enemyString.getText().toString().substring(0, s.length())
+                    .equals(s.toString().substring(0, s.length()))) {
+                if (enemyString.getText().length() == s.length()) {
+                    //全部打ち終わったら文字を切り替える
+                    userInputText.setText("");
+                    //プレイヤー側の攻撃処理
+                    enemyLifeGauge.setProgress(enemyLife -= playerPow);
+                    //攻撃音を再生
+                    se.play(attackSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                    //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
+                    if (enemyLife <= 0) {
+                        if (battleCount < maxBattleCount - 1) {
+                            enemyCrushingAnimation(enemyImage);
+                        } else if (battleCount == maxBattleCount - 1) {
+                            enemyCrushingAnimation(enemyImage);
+                        } else {
+                            //ゲームクリア時の処理
+                            gameEnd(true);
+                        }
                     }
+                    randomStringView();
+                    // リミットタイムをリセットする
+                    limitTimeSurfaceView.resetLimitTime();
+                } else {
+                    //文字列が一致すれば色を変える
+                    String txtStr = "<font color=#00ff00>" + text.substring(0, s.length()) +
+                            "</font>" + text.substring(s.length(), text.length());
+                    enemyString.setText(Html.fromHtml(txtStr));
                 }
-                randomStringView();
-                // リミットタイムをリセットする
-                limitTimeSurfaceView.resetLimitTime();
-            } else {
-                //文字列が一致すれば色を変える
-                String txtStr = "<font color=#00ff00>" + text.substring(0, s.length()) +
-                        "</font>" + text.substring(s.length(), text.length());
-                enemyString.setText(Html.fromHtml(txtStr));
             }
         }
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        Log.d(TAG, "afterTextChanged()");
     }
 
     @Override
     public void enemyAttack() {
         no_damage = false;
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                enemyAnimation((ImageView) findViewById(R.id.enemy_image));
-            }
-        });
+        enemyAnimation((ImageView) findViewById(R.id.enemy_image));
+
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
+
         if (playerLife <= 0) {
-            goToResult(false);
+            //ゲームオーバー時の処理
+            gameEnd(false);
         }
+
         playerLifeGauge.setProgress(playerLife);
+
+        //ダメージ音再生
+        se.play(damageSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
 
     }
 
@@ -398,7 +462,8 @@ public class BattleActivity extends Activity
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                //敵撃破時のSEを再生
+                se.play(enemyDownSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
             }
 
             @Override
@@ -431,7 +496,8 @@ public class BattleActivity extends Activity
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                //敵登場用SE
+                se.play(enemyAdventSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
             }
 
             @Override
