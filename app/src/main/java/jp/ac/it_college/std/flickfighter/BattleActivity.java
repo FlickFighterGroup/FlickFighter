@@ -391,13 +391,23 @@ public class BattleActivity extends Activity
         enemyLifeGauge.setProgress(enemyLife);
     }
 
-    public void enemyAnimation(ImageView view) {
+    public void enemyAttackAnimation(View view) {
         ScaleAnimation animation = new ScaleAnimation(
                 1, 2, 1, 2,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setDuration(100);
 
         view.startAnimation(animation);
+    }
+
+    private void enemyDamageAnimation(View view) {
+        TranslateAnimation translateAnimation =
+                new TranslateAnimation(-20, 20, 0, 0);
+
+        translateAnimation.setRepeatMode(Animation.REVERSE);
+        translateAnimation.setDuration(100);
+
+        view.startAnimation(translateAnimation);
     }
 
     @Override
@@ -417,14 +427,21 @@ public class BattleActivity extends Activity
                 if (enemyString.getText().length() == s.length()) {
                     //全部打ち終わったら文字を切り替える
                     userInputText.setText("");
+
                     //プレイヤー側の攻撃処理
                     enemyLifeGauge.setProgress(enemyLife -= playerPow);
+
                     //攻撃音を再生
                     se.play(attackSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
-                    //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
+
                     if (enemyLife <= 0) {
+                        //敵撃破アニメーション
                         enemyCrushingAnimation(enemyImage);
+                    } else {
+                        //敵がダメージを負った時のアニメーション
+                        enemyDamageAnimation(enemyImage);
                     }
+
                     randomStringView();
                     // リミットタイムをリセットする
                     limitTimeSurfaceView.resetLimitTime();
@@ -446,7 +463,7 @@ public class BattleActivity extends Activity
     public void enemyAttack() {
         no_damage = false;
 
-        enemyAnimation((ImageView) findViewById(R.id.enemy_image));
+        enemyAttackAnimation(findViewById(R.id.enemy_image));
 
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
 
@@ -475,7 +492,7 @@ public class BattleActivity extends Activity
         alphaAnimation.setDuration(1000);
 
         TranslateAnimation moveDownAnimation = new TranslateAnimation(
-                0,0, 0, 100);
+                0, 0, 0, 100);
         moveDownAnimation.setDuration(1000);
 
         AnimationSet animationSet = new AnimationSet(false);
@@ -548,7 +565,7 @@ public class BattleActivity extends Activity
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (battleCount  == maxBattleCount) {
+                if (battleCount == maxBattleCount) {
                     //ボス用のBGMを再生開始
                     bossBgm.start();
                     //警告メッセージを非表示にする
@@ -567,7 +584,9 @@ public class BattleActivity extends Activity
         view.startAnimation(animationSet);
     }
 
-    /** implemented OnKeyboardVisibilityListener */
+    /**
+     * implemented OnKeyboardVisibilityListener
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onVisibilityChanged(boolean isVisible) {
