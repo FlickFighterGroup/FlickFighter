@@ -24,6 +24,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/status_btn"
         android:onClick="goToStatus"
+        android:soundEffectsEnabled="false"
         android:text="ステータス"
         />
 
