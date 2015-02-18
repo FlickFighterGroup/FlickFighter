@@ -35,13 +35,16 @@ public class EnemyInfo {
     }
 
     public static String randomWordView(int i){
-        rand = new Random();
         String[][] tmp = wordBook();
         return tmp[rand.nextInt(i)][rand.nextInt(15)];
     }
 
+    public static String bossWordView(int i) {
+        String[][] tmp = wordBook();
+        return tmp[i][rand.nextInt(15)];
+    }
+
     public static int randomEnemySummons(int i) {
-        rand = new Random();
         return rand.nextInt(i);
     }
 

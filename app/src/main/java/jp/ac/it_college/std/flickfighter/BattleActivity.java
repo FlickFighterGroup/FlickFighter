@@ -116,7 +116,7 @@ public class BattleActivity extends Activity
         //敵キャラ表示
         enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
         enemyImage = (ImageView) findViewById(R.id.enemy_image);
-        randomStringView();
+        enemyStringView();
         enemySummon();
 
         //Timer表示
@@ -315,11 +315,15 @@ public class BattleActivity extends Activity
         inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    public void randomStringView() {
-        //敵の文字列を表示
-        TextView textView = (TextView) findViewById(R.id.enemyString);
-        text = EnemyInfo.randomWordView(stageId);
-        textView.setText(text);
+    public void enemyStringView() {
+        if (battleCount == maxBattleCount) {
+            text = EnemyInfo.bossWordView(stageId);
+            enemyString.setText(text);
+        } else {
+            //敵の文字列を表示
+            text = EnemyInfo.randomWordView(stageId);
+            enemyString.setText(text);
+        }
     }
 
     public void enemySummon() {
@@ -389,7 +393,7 @@ public class BattleActivity extends Activity
                     if (enemyLife <= 0) {
                         enemyCrushingAnimation(enemyImage);
                     }
-                    randomStringView();
+                    enemyStringView();
                     // リミットタイムをリセットする
                     limitTimeSurfaceView.resetLimitTime();
                 } else {
