@@ -21,14 +21,32 @@ public class Winker {
     private Handler mHandler;
     private View view;
     private ScheduledExecutorService mScheduledExecutor;
+    final long awaitTime = 5 * 1000;
 
     public Winker(View view) {
         this.view = view;
         mHandler = new Handler(Looper.getMainLooper());
-        mScheduledExecutor = Executors.newScheduledThreadPool(2);
+    }
+
+    public void stopWink() {
+        try {
+            mScheduledExecutor.shutdown();
+
+            if(!mScheduledExecutor.awaitTermination(awaitTime, TimeUnit.MILLISECONDS)){
+                // タイムアウトした場合、全てのスレッドを中断(interrupted)してスレッドプールを破棄する。
+                mScheduledExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            // awaitTerminationスレッドがinterruptedした場合も、全てのスレッドを中断する
+            System.out.println("awaitTermination interrupted: " + e);
+            mScheduledExecutor.shutdownNow();
+        }
+
     }
 
     public void startWink() {
+        mScheduledExecutor = Executors.newScheduledThreadPool(2);
+
         mScheduledExecutor.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
