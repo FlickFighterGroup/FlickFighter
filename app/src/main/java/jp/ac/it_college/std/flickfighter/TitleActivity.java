@@ -15,9 +15,9 @@ public class TitleActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title);
-        bgm = MediaPlayer.create(this, R.raw.title_bgm);
+        bgm = MediaPlayer.create(this, R.raw.title_bgm01);
         bgm.setLooping(true);
-        bgm.setVolume(0.3f, 0.3f);
+        bgm.setVolume(0.6f, 0.6f);
         bgm.start();
     }
 
