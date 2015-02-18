@@ -31,7 +31,7 @@
             android:layout_column="0"
             android:layout_row="0"
             android:layout_rowSpan="4"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/player"
             android:background="@drawable/simple_frame"
             />
 
@@ -161,11 +161,11 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_levelUp_attack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lv.UP!"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/attack_lebelup_btn"
             android:layout_column="0"
             android:layout_row="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -181,11 +181,11 @@
             android:layout_gravity="center"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_levelUp_defence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lv.UP!"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/diffence_lebelup_btn"
             android:layout_column="1"
             android:layout_row="1"
             android:layout_gravity="center"
@@ -201,11 +201,11 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_levelUp_life"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lv.UP!"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/life_lebelup_btn"
             android:layout_column="2"
             android:layout_row="1"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
@@ -235,12 +235,13 @@
             android:layout_height="match_parent"/>
     </LinearLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_stage_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
         android:text="ステージ選択"
         android:layout_alignParentRight="true"
+        android:background="@drawable/stage_select_btn"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:onClick="goToStageSelect"

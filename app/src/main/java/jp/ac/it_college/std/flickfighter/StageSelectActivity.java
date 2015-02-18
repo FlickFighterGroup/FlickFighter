@@ -35,9 +35,9 @@ public class StageSelectActivity extends Activity{
                 if (playerStatus.getBoolean(stageId + BattleActivity.PREF_CLEAR_TIME, false)
                          && playerStatus.getBoolean(stageId + BattleActivity.PREF_NO_DAMAGE, false)
                          && playerStatus.getBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, false)) {
-                    clearLabel.setImageResource(R.drawable.true_img);
+                    clearLabel.setImageResource(R.drawable.clear1);
                 } else {
-                    clearLabel.setImageResource(R.drawable.sankaku);
+                    clearLabel.setImageResource(R.drawable.clear2);
                 }
             }
         }
