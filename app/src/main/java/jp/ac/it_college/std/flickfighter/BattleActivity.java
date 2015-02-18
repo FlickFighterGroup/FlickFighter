@@ -387,14 +387,7 @@ public class BattleActivity extends Activity
                     se.play(attackSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                     //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
                     if (enemyLife <= 0) {
-                        if (battleCount < maxBattleCount - 1) {
-                            enemyCrushingAnimation(enemyImage);
-                        } else if (battleCount == maxBattleCount - 1) {
-                            enemyCrushingAnimation(enemyImage);
-                        } else {
-                            //ゲームクリア時の処理
-                            gameEnd(true);
-                        }
+                        enemyCrushingAnimation(enemyImage);
                     }
                     randomStringView();
                     // リミットタイムをリセットする
@@ -453,6 +446,9 @@ public class BattleActivity extends Activity
         animationSet.addAnimation(alphaAnimation);
         animationSet.addAnimation(iterateAnimation);
         animationSet.addAnimation(moveDownAnimation);
+        animationSet.setFillAfter(true);
+        view.startAnimation(animationSet);
+
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -462,10 +458,14 @@ public class BattleActivity extends Activity
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (battleCount == maxBattleCount - 1) {
+                if (battleCount < maxBattleCount - 1) {
+                    enemySummon();
+                } else if (battleCount == maxBattleCount - 1) {
                     bossSummon();
                 } else {
-                    enemySummon();
+                    //ゲームクリア時の処理
+                    gameEnd(true);
+                    return;
                 }
                 readyAnimation(view);
             }
@@ -475,7 +475,6 @@ public class BattleActivity extends Activity
 
             }
         });
-        view.startAnimation(animationSet);
     }
 
     private void readyAnimation(View view) {
