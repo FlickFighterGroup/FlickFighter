@@ -31,9 +31,9 @@ public class ChallengeFragment extends Fragment
     //規定時間
     public static final long STIPULATED_TIME = 180 * 1000;
     private int[] img =  {
-            R.drawable.true_img
-            ,R.drawable.false_img
-            ,R.drawable.sankaku
+            R.drawable.first_clear
+            ,R.drawable.failure
+            ,R.drawable.clear2
     };
     private ImageSwitcher challenge1, challenge2, challenge3;
 
@@ -105,7 +105,7 @@ public class ChallengeFragment extends Fragment
         if (mChallenge3) {
             challenge3.setImageResource(img[2]);
             if (!playerStatus.getBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, false)) {
-                challenge1.setImageResource(img[0]);
+                challenge3.setImageResource(img[0]);
                 editor.putInt(PREF_POINT, playerStatus.getInt(PREF_POINT, 0) + 1)
                         .putBoolean(stageId + BattleActivity.PREF_RARE_CRUSHING, true)
                         .apply();
