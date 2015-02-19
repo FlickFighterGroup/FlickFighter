@@ -5,8 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,12 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
     private TextView pointView;
 
+    private SoundPool soundPool;
+    private int buttonClickSoundId;
+    private int cancelSoundId;
+    private int levelUpSoundId;
+    private int errorSoundId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,18 +34,15 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         findViewById(R.id.button_levelUp_attack).setOnClickListener(this);
         findViewById(R.id.button_levelUp_defence).setOnClickListener(this);
         findViewById(R.id.button_levelUp_life).setOnClickListener(this);
+        findViewById(R.id.button_stage_select).setOnClickListener(this);
 
         playerStatus = getSharedPreferences("status", MODE_PRIVATE);
         statusDisplay(); //ステータスの状態を表示
         pointView = (TextView) findViewById(R.id.point_view_label);
         //現在のポイントを表示
         pointView.setText(String.valueOf(playerStatus.getInt(POINT, 0)));
-    }
 
-    public void goToStageSelect(View v){
-        Intent intent = new Intent(this, StageSelectActivity.class);
-        startActivity(intent);
-        finish();
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
     }
 
     private void levelUp(final String statusName) {
@@ -65,7 +69,11 @@ public class StatusActivity extends Activity implements View.OnClickListener{
                             statusDisplay();
                             Toast.makeText(getApplicationContext(), "レベルアップしました！", Toast.LENGTH_SHORT).show();
                             pointView.setText(String.valueOf(playerStatus.getInt(POINT,0)));
+                            //レベルアップのSEを再生
+                            soundPool.play(levelUpSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                         } else {
+                            //エラー音を再生
+                            soundPool.play(errorSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                             Toast.makeText(getApplicationContext(), "ポイントが足りません！", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -74,6 +82,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        //キャンセル音再生
+                        soundPool.play(cancelSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                         return;
                     }
                 })
@@ -91,6 +101,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        soundPool.play(buttonClickSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+
         switch (view.getId()) {
             case R.id.button_levelUp_attack:
                 levelUp(ATTACK);
@@ -101,6 +113,29 @@ public class StatusActivity extends Activity implements View.OnClickListener{
             case R.id.button_levelUp_life:
                 levelUp(LIFE);
                 break;
+            case R.id.button_stage_select:
+                Intent intent = new Intent(this, StageSelectActivity.class);
+                startActivity(intent);
+                finish();
+                break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //ボタン押下時の効果音を読み込み
+        buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
+        cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
+        levelUpSoundId = soundPool.load(this, R.raw.se_levelup01, 1);
+        errorSoundId = soundPool.load(this, R.raw.se_error01, 1);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //SoundPoolの開放
+        soundPool.release();
     }
 }
