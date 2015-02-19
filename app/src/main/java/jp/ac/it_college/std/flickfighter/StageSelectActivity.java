@@ -6,8 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,10 @@ public class StageSelectActivity extends Activity{
     public static final String STAGE_ID = "stageId";
     private ImageView clearLabel;
     private SharedPreferences playerStatus;
+
+    private SoundPool soundPool;
+    private int buttonClickSoundId;
+    private int cancelSoundId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,8 @@ public class StageSelectActivity extends Activity{
                 }
             }
         }
+
+        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
     }
 
     public void goToBattle(final int stageId, String stageName){
@@ -59,18 +66,22 @@ public class StageSelectActivity extends Activity{
                 .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        soundPool.play(cancelSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                         return;
                     }
                 }).show();
     }
 
     public void goToStatus(View view) {
+        soundPool.play(buttonClickSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
         Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void stageSelect(View view) {
+        soundPool.play(buttonClickSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+
         switch (view.getId()) {
             case R.id.button_stage1:
                 goToBattle(1, (String)((TextView)view).getText());
@@ -103,5 +114,20 @@ public class StageSelectActivity extends Activity{
                 goToBattle(10, (String)((TextView)view).getText());
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //効果音の読み込み
+        buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
+        cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //SoundPoolの開放
+        soundPool.release();
     }
 }
