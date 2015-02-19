@@ -2,6 +2,8 @@ package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +13,9 @@ public class ResultActivity extends Activity
         implements View.OnClickListener {
 
     private int stageId;
+
+    private SoundPool soundPool;
+    private int buttonClickSoundId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +58,14 @@ public class ResultActivity extends Activity
         } else {
             clearLabel.setText("Failure...");
         }
+
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
     }
 
     @Override
     public void onClick(View view) {
         Intent intent = null;
+        soundPool.play(buttonClickSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
 
         switch (view.getId()) {
             case R.id.button_retry:
@@ -73,5 +81,19 @@ public class ResultActivity extends Activity
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //効果音の読み込み
+        buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //SoundPoolの開放
+        soundPool.release();
     }
 }
