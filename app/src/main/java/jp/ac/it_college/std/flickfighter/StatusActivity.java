@@ -25,6 +25,7 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     private int buttonClickSoundId;
     private int cancelSoundId;
     private int levelUpSoundId;
+    private int errorSoundId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
                             //レベルアップのSEを再生
                             soundPool.play(levelUpSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                         } else {
+                            //エラー音を再生
+                            soundPool.play(errorSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                             Toast.makeText(getApplicationContext(), "ポイントが足りません！", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -125,6 +128,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
         cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
         levelUpSoundId = soundPool.load(this, R.raw.se_levelup01, 1);
+        errorSoundId = soundPool.load(this, R.raw.se_error01, 1);
+
     }
 
     @Override
