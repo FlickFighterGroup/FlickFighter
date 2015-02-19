@@ -113,11 +113,6 @@ public class BattleActivity extends Activity
 
         battleCountView = (TextView) findViewById(R.id.battle_count);
         battleCountView.setText(battleCount + " / " + maxBattleCount);
-        //敵キャラ表示
-        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
-        enemyImage = (ImageView) findViewById(R.id.enemy_image);
-        enemyStringView();
-        enemySummon();
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
@@ -131,6 +126,12 @@ public class BattleActivity extends Activity
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+
+        //敵キャラ表示
+        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
+        enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        enemyStringView();
+        enemySummon();
 
         //キーボードの表示・非表示を検出するリスナーをセット
         new DetectableKeyboard(this).setKeyboardListener(this);
@@ -316,6 +317,7 @@ public class BattleActivity extends Activity
     }
 
     public void enemyStringView() {
+
         if (battleCount == maxBattleCount) {
             text = EnemyInfo.bossWordView(stageId);
             enemyString.setText(text);

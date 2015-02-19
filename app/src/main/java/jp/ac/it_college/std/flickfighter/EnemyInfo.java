@@ -3,7 +3,7 @@ package jp.ac.it_college.std.flickfighter;
 import java.util.Random;
 
 public class EnemyInfo {
-    private static Random rand;
+    private static Random rand = new Random();
     public static int[] bossPath = {
             R.drawable.boss1 ,R.drawable.boss2
             ,R.drawable.boss3 ,R.drawable.boss4
@@ -41,7 +41,7 @@ public class EnemyInfo {
 
     public static String bossWordView(int i) {
         String[][] tmp = wordBook();
-        return tmp[i][rand.nextInt(15)];
+        return tmp[i - 1][rand.nextInt(15)];
     }
 
     public static int randomEnemySummons(int i) {
