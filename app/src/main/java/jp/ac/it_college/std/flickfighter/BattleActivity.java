@@ -119,11 +119,6 @@ public class BattleActivity extends Activity
 
         battleCountView = (TextView) findViewById(R.id.battle_count);
         battleCountView.setText(battleCount + " / " + maxBattleCount);
-        //敵キャラ表示
-        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
-        enemyImage = (ImageView) findViewById(R.id.enemy_image);
-        randomStringView();
-        enemySummon();
 
         //Timer表示
         timerLabel = (TextView) findViewById(R.id.timer_label);
@@ -137,6 +132,12 @@ public class BattleActivity extends Activity
         enemyString = (TextView) findViewById(R.id.enemyString);
         userInputText = (EditText) findViewById(R.id.userInputText);
         userInputText.addTextChangedListener(this);
+
+        //敵キャラ表示
+        enemyLifeGauge = (ProgressBar) findViewById(R.id.enemy_life_gauge);
+        enemyImage = (ImageView) findViewById(R.id.enemy_image);
+        enemyStringView();
+        enemySummon();
 
         //キーボードの表示・非表示を検出するリスナーをセット
         new DetectableKeyboard(this).setKeyboardListener(this);
@@ -213,11 +214,10 @@ public class BattleActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        if (battleCount < maxBattleCount) {
-            battleBgm.pause();
-        } else {
-            bossBgm.pause();
-        }
+        //SoundPoolの開放
+        se.release();
+        battleBgm.pause();
+        bossBgm.pause();
     }
 
     @Override
@@ -351,11 +351,16 @@ public class BattleActivity extends Activity
         inputMethodManager.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    public void randomStringView() {
-        //敵の文字列を表示
-        TextView textView = (TextView) findViewById(R.id.enemyString);
-        text = EnemyInfo.randomWordView(stageId);
-        textView.setText(text);
+    public void enemyStringView() {
+
+        if (battleCount == maxBattleCount) {
+            text = EnemyInfo.bossWordView(stageId);
+            enemyString.setText(text);
+        } else {
+            //敵の文字列を表示
+            text = EnemyInfo.randomWordView(stageId);
+            enemyString.setText(text);
+        }
     }
 
     public void enemySummon() {
@@ -442,7 +447,8 @@ public class BattleActivity extends Activity
                         enemyDamageAnimation(enemyImage);
                     }
 
-                    randomStringView();
+                    enemyStringView();
+
                     // リミットタイムをリセットする
                     limitTimeSurfaceView.resetLimitTime();
                 } else {
@@ -535,7 +541,6 @@ public class BattleActivity extends Activity
         TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, 0);
 
         AnimationSet animationSet = new AnimationSet(true);
-
         //雑魚敵かボスかで登場時間を変える
         if (battleCount < maxBattleCount) {
             animationSet.setDuration(1000);
@@ -584,9 +589,7 @@ public class BattleActivity extends Activity
         view.startAnimation(animationSet);
     }
 
-    /**
-     * implemented OnKeyboardVisibilityListener
-     */
+    /** implemented OnKeyboardVisibilityListener */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onVisibilityChanged(boolean isVisible) {
