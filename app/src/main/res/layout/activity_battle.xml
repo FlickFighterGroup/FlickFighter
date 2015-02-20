@@ -18,15 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
-    <SurfaceView
-        android:id="@+id/limit_time_bar"
-        android:layout_width="150dp"
-        android:layout_height="10dp"
-        android:layout_below="@id/enemy_image"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:background="#00FF00" />
-
     <LinearLayout
         android:id="@+id/text_box"
         android:layout_width="match_parent"
@@ -67,6 +58,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
+
+    <SurfaceView
+        android:id="@+id/limit_time_bar"
+        android:layout_width="150dp"
+        android:layout_height="10dp"
+        android:layout_below="@id/text_box"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:background="#00FF00" />
 
     <Button
         android:id="@+id/keyBoardShownButton"
