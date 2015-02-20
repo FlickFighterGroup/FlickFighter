@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,8 @@ public class StageSelectActivity extends Activity{
     private SoundPool soundPool;
     private int buttonClickSoundId;
     private int cancelSoundId;
+
+    private MediaPlayer bgm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class StageSelectActivity extends Activity{
         }
 
         soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        bgm = MediaPlayer.create(this, R.raw.status_and_stageselect_bgm01);
+        bgm.setLooping(true);
+        bgm.setVolume(0.3f, 0.3f);
     }
 
     public void goToBattle(final int stageId, String stageName){
@@ -122,6 +128,8 @@ public class StageSelectActivity extends Activity{
         //効果音の読み込み
         buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
         cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
+        //BGM再生開始
+        bgm.start();
     }
 
     @Override
@@ -129,5 +137,7 @@ public class StageSelectActivity extends Activity{
         super.onPause();
         //SoundPoolの開放
         soundPool.release();
+        //BGM再生停止
+        bgm.pause();
     }
 }

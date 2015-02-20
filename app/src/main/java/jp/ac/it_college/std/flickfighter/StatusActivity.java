@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +28,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     private int levelUpSoundId;
     private int errorSoundId;
 
+    private MediaPlayer bgm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,9 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         pointView.setText(String.valueOf(playerStatus.getInt(POINT, 0)));
 
         soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        bgm = MediaPlayer.create(this, R.raw.status_and_stageselect_bgm01);
+        bgm.setLooping(true);
+        bgm.setVolume(0.3f, 0.3f);
     }
 
     private void levelUp(final String statusName) {
@@ -92,11 +98,11 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
     private void statusDisplay(){
         ((TextView)findViewById(R.id.status_attack_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(ATTACK, 1)));
+                .setText(String.valueOf(playerStatus.getInt(ATTACK, 1)));
         ((TextView)findViewById(R.id.status_defence_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(DEFENCE, 0)));
+                .setText(String.valueOf(playerStatus.getInt(DEFENCE, 0)));
         ((TextView)findViewById(R.id.status_life_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(LIFE, 5)));
+                .setText(String.valueOf(playerStatus.getInt(LIFE, 5)));
     }
 
     @Override
@@ -129,7 +135,8 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
         levelUpSoundId = soundPool.load(this, R.raw.se_levelup01, 1);
         errorSoundId = soundPool.load(this, R.raw.se_error01, 1);
-
+        //BGM再生開始
+        bgm.start();
     }
 
     @Override
@@ -137,5 +144,7 @@ public class StatusActivity extends Activity implements View.OnClickListener{
         super.onPause();
         //SoundPoolの開放
         soundPool.release();
+        //BGM再生停止
+        bgm.pause();
     }
 }

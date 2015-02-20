@@ -1,61 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:layout_height="match_parent">
-
+    android:orientation="vertical">
 
 
     <TextView
         android:id="@+id/result_clear_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="CLEAR!"
-        android:textSize="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-         />
+        android:text="CLEAR!"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50dp" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/result_clear_text"
-        android:layout_above="@+id/footer"
-        >
+        android:layout_below="@+id/result_clear_text">
 
 
     </FrameLayout>
 
-
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/view_bottom_middle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        >
+        android:layout_centerHorizontal="true"
+        android:padding="50dp"
+        />
 
-        <Button
-            android:id="@+id/button_retry"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="リトライ"
-            android:soundEffectsEnabled="false"
-            />
 
-        <Button
-            android:id="@+id/button_to_status"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ステータスへ"
-            android:soundEffectsEnabled="false"
-            />
+    <ImageButton
+        android:id="@+id/button_retry"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/retry"
+        android:soundEffectsEnabled="false"
+        android:layout_toLeftOf="@id/view_bottom_middle"
+        android:layout_alignParentBottom="true"
+        />
 
-    </LinearLayout>
-
+    <ImageButton
+        android:id="@+id/button_to_status"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/status_btn"
+        android:soundEffectsEnabled="false"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/view_bottom_middle"
+        />
 
 </RelativeLayout>
