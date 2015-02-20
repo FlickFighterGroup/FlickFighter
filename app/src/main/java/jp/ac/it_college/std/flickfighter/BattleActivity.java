@@ -214,7 +214,7 @@ public class BattleActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        //SoundPoolの開放
+        //BGM一時停止
         battleBgm.pause();
         bossBgm.pause();
     }
