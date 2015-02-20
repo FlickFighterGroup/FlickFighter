@@ -86,14 +86,20 @@ public class BattleActivity extends Activity
     private int damageSoundId;
     private int attackSoundId;
     private int enemyAdventSoundId;
+    private int bossAdventSoundId;
     private int enemyDownSoundId;
     private int gameClearSoundId;
     private int gameOverSoundId;
 
     //BGM用
     private MediaPlayer battleBgm;
+    private MediaPlayer bossBgm;
 
     private boolean gameIsRunning;
+
+    //ボス出現時の警告メッセージ用メッセージと点滅用Winker
+    private Winker messageWinker;
+    private View bossAdventMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,13 +153,22 @@ public class BattleActivity extends Activity
                 });
 
         //効果音再生用SoundPool
-        se = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
+        se = new SoundPool(7, AudioManager.STREAM_MUSIC, 0);
 
         //戦闘曲用MediaPlayer
         battleBgm = MediaPlayer.create(this, R.raw.battle_bgm);
         battleBgm.setLooping(true);
         battleBgm.setVolume(0.3f, 0.3f);
         battleBgm.start();
+
+        //ボス用のBGM
+        bossBgm = MediaPlayer.create(this, R.raw.boss_bgm01);
+        bossBgm.setLooping(true);
+        bossBgm.setVolume(0.3f, 0.3f);
+
+        //ボス出現時のメッセージと点滅用のWinker
+        bossAdventMessage = findViewById(R.id.text_boss_advent_message);
+        messageWinker = new Winker(bossAdventMessage);
 
         gameReady();
     }
@@ -168,6 +183,7 @@ public class BattleActivity extends Activity
         damageSoundId = se.load(this, R.raw.se_damage01, 1);
         attackSoundId = se.load(this, R.raw.se_attack01, 1);
         enemyAdventSoundId = se.load(this, R.raw.se_enemyadvent01, 1);
+        bossAdventSoundId = se.load(this, R.raw.se_bossadvent01, 1);
         enemyDownSoundId = se.load(this, R.raw.se_enemydown01, 1);
         gameClearSoundId = se.load(this, R.raw.se_gameclear01, 1);
         gameOverSoundId = se.load(this, R.raw.se_gameover01, 1);
@@ -200,7 +216,25 @@ public class BattleActivity extends Activity
         super.onPause();
         //SoundPoolの開放
         se.release();
-        battleBgm.stop();
+        battleBgm.pause();
+        bossBgm.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //SoundPoolの開放
+        se.release();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (battleCount < maxBattleCount) {
+            battleBgm.start();
+        } else {
+            bossBgm.start();
+        }
     }
 
     @Override
@@ -278,6 +312,7 @@ public class BattleActivity extends Activity
     private void gameEnd(final boolean isGameClear) {
         gameStop();
         battleBgm.stop();
+        bossBgm.stop();
         timer.cancel();
 
         //ゲームオーバー用BGM
@@ -355,19 +390,29 @@ public class BattleActivity extends Activity
         int bossId = stageId - 1;
         bossImage.setImageResource(EnemyInfo.bossPath[bossId]);
         enemyLife = EnemyInfo.bossLifeSetting(bossId);
-        enemyLife = EnemyInfo.bossPowSetting(bossId);
+        enemyPow = EnemyInfo.bossPowSetting(bossId);
 
         enemyLifeGauge.setMax(enemyLife);
         enemyLifeGauge.setProgress(enemyLife);
     }
 
-    public void enemyAnimation(ImageView view) {
+    public void enemyAttackAnimation(View view) {
         ScaleAnimation animation = new ScaleAnimation(
                 1, 2, 1, 2,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setDuration(100);
 
         view.startAnimation(animation);
+    }
+
+    private void enemyDamageAnimation(View view) {
+        TranslateAnimation translateAnimation =
+                new TranslateAnimation(-20, 20, 0, 0);
+
+        translateAnimation.setRepeatMode(Animation.REVERSE);
+        translateAnimation.setDuration(100);
+
+        view.startAnimation(translateAnimation);
     }
 
     @Override
@@ -387,15 +432,23 @@ public class BattleActivity extends Activity
                 if (enemyString.getText().length() == s.length()) {
                     //全部打ち終わったら文字を切り替える
                     userInputText.setText("");
+
                     //プレイヤー側の攻撃処理
                     enemyLifeGauge.setProgress(enemyLife -= playerPow);
+
                     //攻撃音を再生
                     se.play(attackSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
-                    //enemyLifeが0以下になったらかつ最大バトル数を上回らなければ新しく生成
+
                     if (enemyLife <= 0) {
+                        //敵撃破アニメーション
                         enemyCrushingAnimation(enemyImage);
+                    } else {
+                        //敵がダメージを負った時のアニメーション
+                        enemyDamageAnimation(enemyImage);
                     }
+
                     enemyStringView();
+
                     // リミットタイムをリセットする
                     limitTimeSurfaceView.resetLimitTime();
                 } else {
@@ -416,7 +469,7 @@ public class BattleActivity extends Activity
     public void enemyAttack() {
         no_damage = false;
 
-        enemyAnimation((ImageView) findViewById(R.id.enemy_image));
+        enemyAttackAnimation(findViewById(R.id.enemy_image));
 
         playerLife -= (enemyPow - playerDefence) >= 0 ? enemyPow - playerDefence : 0;
 
@@ -445,7 +498,7 @@ public class BattleActivity extends Activity
         alphaAnimation.setDuration(1000);
 
         TranslateAnimation moveDownAnimation = new TranslateAnimation(
-                0,0, 0, 100);
+                0, 0, 0, 100);
         moveDownAnimation.setDuration(1000);
 
         AnimationSet animationSet = new AnimationSet(false);
@@ -488,7 +541,12 @@ public class BattleActivity extends Activity
         TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, 0);
 
         AnimationSet animationSet = new AnimationSet(true);
-        animationSet.setDuration(1000);
+        //雑魚敵かボスかで登場時間を変える
+        if (battleCount < maxBattleCount) {
+            animationSet.setDuration(1000);
+        } else {
+            animationSet.setDuration(3000);
+        }
         animationSet.addAnimation(alphaAnimation);
         animationSet.addAnimation(translateAnimation);
 
@@ -496,11 +554,29 @@ public class BattleActivity extends Activity
             @Override
             public void onAnimationStart(Animation animation) {
                 //敵登場用SE
-                se.play(enemyAdventSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                if (battleCount < maxBattleCount) {
+                    //雑魚敵が出てきた時の効果音
+                    se.play(enemyAdventSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                } else {
+                    //戦闘BGMを停止しボス出現時のSEを再生
+                    battleBgm.stop();
+                    //警告メッセージを表示
+                    bossAdventMessage.setVisibility(View.VISIBLE);
+                    messageWinker.startWink();
+
+                    se.play(bossAdventSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                }
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                if (battleCount == maxBattleCount) {
+                    //ボス用のBGMを再生開始
+                    bossBgm.start();
+                    //警告メッセージを非表示にする
+                    bossAdventMessage.setVisibility(View.INVISIBLE);
+                    messageWinker.stopWink();
+                }
                 gameStart();
             }
 
