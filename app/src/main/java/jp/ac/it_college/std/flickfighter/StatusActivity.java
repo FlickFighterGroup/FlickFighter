@@ -142,9 +142,14 @@ public class StatusActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onPause() {
         super.onPause();
-        //SoundPoolの開放
-        soundPool.release();
         //BGM再生停止
         bgm.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //SoundPoolの開放
+        soundPool.release();
     }
 }
