@@ -111,8 +111,8 @@ public class ResultActivity extends Activity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
         //SoundPoolの開放
         soundPool.release();
     }
