@@ -98,11 +98,11 @@ public class StatusActivity extends Activity implements View.OnClickListener{
 
     private void statusDisplay(){
         ((TextView)findViewById(R.id.status_attack_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(ATTACK, 1)));
+                .setText(String.valueOf(playerStatus.getInt(ATTACK, 1)));
         ((TextView)findViewById(R.id.status_defence_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(DEFENCE, 0)));
+                .setText(String.valueOf(playerStatus.getInt(DEFENCE, 0)));
         ((TextView)findViewById(R.id.status_life_level))
-                .setText(String.valueOf("Lv." + playerStatus.getInt(LIFE, 5)));
+                .setText(String.valueOf(playerStatus.getInt(LIFE, 5)));
     }
 
     @Override
