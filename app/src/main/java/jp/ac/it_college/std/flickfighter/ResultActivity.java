@@ -31,32 +31,52 @@ public class ResultActivity extends Activity
 
 
         //ステージ突破成功時にチャレンジフラグメントを表示する
+        Bundle challengeFrag = new Bundle();
         if(getIntent().getExtras().getBoolean(BattleActivity.PREF_CLEAR_JUDGE)) {
             clearLabel.setText("CLEAR!");
             //各チャレンジの成功・失敗判定をBundleにput
-            Bundle challengeFrag = new Bundle();
+
             //クリアタイム
             challengeFrag.putLong(
                     ChallengeFragment.CHALLENGE_CLEAR_WITHIN_3MIN,
                     getIntent().getLongExtra(BattleActivity.PREF_CLEAR_TIME, 180 * 1000));
 
+            //ノーダメージ
             challengeFrag.putBoolean(
                     ChallengeFragment.CHALLENGE_CLEAR_NO_DAMAGE,
                     getIntent().getBooleanExtra(BattleActivity.PREF_NO_DAMAGE, false));
 
+            //レアモンスター撃破
             challengeFrag.putBoolean(
                     ChallengeFragment.CHALLENGE_CLEAR_RARE_CRUSHING,
                     getIntent().getBooleanExtra(BattleActivity.PREF_RARE_CRUSHING, false));
 
-            //ステージ突破成功・失敗の判定後フラグメントを切り替える
-            if (savedInstanceState == null) {
-                getFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container,
-                                ChallengeFragment.newInstance(challengeFrag))
-                        .commit();
-            }
         } else {
+            //ゲームオーバー時には各チャレンジに失敗フラグを建ててフラグメント表示（仕様決まり次第、要変更)
+
             clearLabel.setText("Failure...");
+            //各チャレンジの成功・失敗判定をBundleにput
+            //クリアタイム
+            challengeFrag.putLong(
+                    ChallengeFragment.CHALLENGE_CLEAR_WITHIN_3MIN, 180 * 1000);
+
+            //ノーダメージ
+            challengeFrag.putBoolean(
+                    ChallengeFragment.CHALLENGE_CLEAR_NO_DAMAGE, false);
+
+            //レアモンスター撃破
+            challengeFrag.putBoolean(
+                    ChallengeFragment.CHALLENGE_CLEAR_RARE_CRUSHING, false);
+
+
+        }
+
+        //ステージ突破成功・失敗の判定後フラグメントを切り替える
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container,
+                            ChallengeFragment.newInstance(challengeFrag))
+                    .commit();
         }
 
         soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
