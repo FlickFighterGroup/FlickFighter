@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -99,7 +100,8 @@ public class BattleActivity extends Activity
 
     //ボス出現時の警告メッセージ用メッセージと点滅用Winker
     private Winker messageWinker;
-    private View bossAdventMessage;
+    private TextView messageTextView;
+    private TextView bossAdventMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,8 +168,9 @@ public class BattleActivity extends Activity
         bossBgm.setLooping(true);
         bossBgm.setVolume(0.3f, 0.3f);
 
-        //ボス出現時のメッセージと点滅用のWinker
-        bossAdventMessage = findViewById(R.id.text_boss_advent_message);
+        //メッセージと点滅用のWinker
+        messageTextView = (TextView) findViewById(R.id.text_message);
+        bossAdventMessage = (TextView) findViewById(R.id.text_boss_advent_message);
         messageWinker = new Winker(bossAdventMessage);
 
         gameReady();
@@ -191,16 +194,41 @@ public class BattleActivity extends Activity
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                //ゲーム開始メッセージのアニメーションを開始
+                messageTextView.setTextColor(Color.WHITE);
+                messageTextView.setText("Ready?");
+                messageTextView.setVisibility(View.VISIBLE);
 
+                ScaleAnimation scaleAnimation = new ScaleAnimation(
+                        0.5f, 1.5f, 0.5f, 1.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                scaleAnimation.setDuration(2000);
+
+
+                AnimationSet startAnimationSet = new AnimationSet(false);
+                startAnimationSet.addAnimation(scaleAnimation);
+                startAnimationSet.setFillAfter(true);
+                messageTextView.startAnimation(startAnimationSet);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                // タイマーをセット
-                timer = new Timer();
-                timerTask = new Task1();
-                timer.scheduleAtFixedRate(timerTask, 0, 100);
-                gameStart();
+                messageTextView.setText("GO!");
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //開始メッセージを非表示にする
+                        messageTextView.setText("");
+                        messageTextView.setVisibility(View.INVISIBLE);
+
+                        // タイマーをセット
+                        timer = new Timer();
+                        timerTask = new Task1();
+                        timer.scheduleAtFixedRate(timerTask, 0, 100);
+                        gameStart();
+                    }
+                }, 500);
             }
 
             @Override
@@ -295,6 +323,7 @@ public class BattleActivity extends Activity
         gameIsRunning = true;
         textBox.setVisibility(View.VISIBLE);
         enemyLifeGauge.setVisibility(View.VISIBLE);
+        playerLifeGauge.setVisibility(View.VISIBLE);
         limitTimeBar.setVisibility(View.VISIBLE);
         userInputText.requestFocus();
         limitTimeSurfaceView.startMeasurement();
@@ -304,6 +333,7 @@ public class BattleActivity extends Activity
         gameIsRunning = false;
         textBox.setVisibility(View.INVISIBLE);
         enemyLifeGauge.setVisibility(View.INVISIBLE);
+        playerLifeGauge.setVisibility(View.INVISIBLE);
         limitTimeBar.setVisibility(View.INVISIBLE);
         limitTimeSurfaceView.stopMeasurement();
     }
@@ -314,15 +344,35 @@ public class BattleActivity extends Activity
         bossBgm.stop();
         timer.cancel();
 
+        //ゲームオーバーのアニメーション
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0.f, 1.f);
+
+        TranslateAnimation moveDownAnimation =
+                new TranslateAnimation(0, 0, -200, 0);
+
+        final AnimationSet gameOverAnimation = new AnimationSet(true);
+        gameOverAnimation.setFillAfter(true);
+        gameOverAnimation.setDuration(2000);
+        gameOverAnimation.addAnimation(alphaAnimation);
+        gameOverAnimation.addAnimation(moveDownAnimation);
+
         //ゲームオーバー用BGM
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 if (isGameClear) {
                     se.play(gameClearSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                    messageTextView.setTextColor(Color.YELLOW);
+                    messageTextView.setText("STAGE CLEAR!");
                 } else {
                     se.play(gameOverSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                    messageTextView.setTextColor(Color.GRAY);
+                    messageTextView.setText("GAME OVER");
                 }
+
+                messageTextView.setVisibility(View.VISIBLE);
+                messageTextView.startAnimation(gameOverAnimation);
             }
         }, 1000);
 
