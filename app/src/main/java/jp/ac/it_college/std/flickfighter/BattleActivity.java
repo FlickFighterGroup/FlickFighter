@@ -364,7 +364,7 @@ public class BattleActivity extends Activity
                 if (isGameClear) {
                     se.play(gameClearSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                     messageTextView.setTextColor(Color.YELLOW);
-                    messageTextView.setText("STAGE CLEAR!");
+                    messageTextView.setText("CLEAR!");
                 } else {
                     se.play(gameOverSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                     messageTextView.setTextColor(Color.GRAY);
