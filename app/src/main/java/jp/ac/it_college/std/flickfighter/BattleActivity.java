@@ -296,7 +296,7 @@ public class BattleActivity extends Activity
 
             new AlertDialog.Builder(this)
                     .setTitle("確認")
-                    .setMessage("ステージ選択画面へ戻りますか?")
+                    .setMessage("ステータス画面へ戻りますか?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
