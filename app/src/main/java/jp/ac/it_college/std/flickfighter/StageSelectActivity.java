@@ -24,6 +24,7 @@ public class StageSelectActivity extends Activity{
     private SoundPool soundPool;
     private int buttonClickSoundId;
     private int cancelSoundId;
+    private int stageSelectSoundId;
 
     private MediaPlayer bgm;
 
@@ -50,7 +51,7 @@ public class StageSelectActivity extends Activity{
             }
         }
 
-        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
         bgm = MediaPlayer.create(this, R.raw.status_and_stageselect_bgm01);
         bgm.setLooping(true);
         bgm.setVolume(0.3f, 0.3f);
@@ -64,6 +65,7 @@ public class StageSelectActivity extends Activity{
                 .setPositiveButton("挑戦", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        soundPool.play(stageSelectSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
                         intent.putExtra(STAGE_ID, stageId);
                         startActivity(intent);
                         finish();
@@ -128,6 +130,7 @@ public class StageSelectActivity extends Activity{
         //効果音の読み込み
         buttonClickSoundId = soundPool.load(this, R.raw.se_button_click01, 1);
         cancelSoundId = soundPool.load(this, R.raw.se_cancel01, 1);
+        stageSelectSoundId = soundPool.load(this, R.raw.se_stageselect01, 1);
         //BGM再生開始
         bgm.start();
     }
