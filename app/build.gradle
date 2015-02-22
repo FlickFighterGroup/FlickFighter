@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+//            runProguard false_img
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

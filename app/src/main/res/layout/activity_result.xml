@@ -1,55 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical">
+
 
     <TextView
+        android:id="@+id/result_clear_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="CLEAR!"
-        android:textSize="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/result_clear_text" />
+        android:text="CLEAR!"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50dp" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/result_clear_text">
+
+
+    </FrameLayout>
 
     <TextView
+        android:id="@+id/view_bottom_middle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="チャレンジ1"
-        android:id="@+id/challenge1"
-        android:padding="20dp"
-        android:background="@drawable/simple_frame"
-        android:layout_below="@+id/result_clear_text"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="チャレンジ2"
-        android:id="@+id/challenge2"
-        android:padding="20dp"
-        android:background="@drawable/simple_frame"
-        android:layout_below="@+id/challenge1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="チャレンジ3"
-        android:id="@+id/challenge3"
-        android:padding="20dp"
-        android:background="@drawable/simple_frame"
-        android:layout_below="@+id/challenge2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
+        android:padding="50dp"
+        />
 
 
+    <ImageButton
+        android:id="@+id/button_retry"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/retry"
+        android:soundEffectsEnabled="false"
+        android:layout_toLeftOf="@id/view_bottom_middle"
+        android:layout_alignParentBottom="true"
+        />
+
+    <ImageButton
+        android:id="@+id/button_to_status"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/status_btn"
+        android:soundEffectsEnabled="false"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/view_bottom_middle"
+        />
 
 </RelativeLayout>
