@@ -52,7 +52,7 @@ public class ChallengeFragment extends Fragment
         super.onCreate(savedInstanceState);
         playerStatus = getActivity().getSharedPreferences("status", Context.MODE_PRIVATE);
         editor = playerStatus.edit();
-        stageId = getActivity().getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        stageId = getActivity().getIntent().getExtras().getInt(StageSelectFragment.STAGE_ID);
         editor.putBoolean(stageId + STAGE_CLEAR, true).apply();
         if (getArguments() != null) {
             mChallenge1 = getArguments().getLong(CHALLENGE_CLEAR_WITHIN_3MIN) < STIPULATED_TIME;

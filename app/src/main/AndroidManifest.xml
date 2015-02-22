@@ -18,12 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StatusActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".StageSelectActivity"
+            android:name=".StatusAndStageSelectActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>

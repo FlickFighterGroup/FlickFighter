@@ -1,10 +1,13 @@
 package jp.ac.it_college.std.flickfighter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,7 +24,7 @@ public class ResultActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        stageId = getIntent().getExtras().getInt(StageSelectFragment.STAGE_ID);
 
         //リトライ・終了ボタンのsetOnClickListener
         findViewById(R.id.button_retry).setOnClickListener(this);
@@ -90,10 +93,10 @@ public class ResultActivity extends Activity
         switch (view.getId()) {
             case R.id.button_retry:
                 intent = new Intent(this, BattleActivity.class)
-                        .putExtra(StageSelectActivity.STAGE_ID, stageId);
+                        .putExtra(StageSelectFragment.STAGE_ID, stageId);
                 break;
             case R.id.button_to_status:
-                intent = new Intent(this, StatusActivity.class);
+                intent = new Intent(this, StatusAndStageSelectActivity.class);
                 break;
         }
 
@@ -116,4 +119,30 @@ public class ResultActivity extends Activity
         //SoundPoolの開放
         soundPool.release();
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("確認")
+                    .setMessage("ゲームを終了しますか?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    }).show();
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }
