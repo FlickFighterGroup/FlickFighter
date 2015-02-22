@@ -108,15 +108,25 @@
         android:textSize="30dp" />
 
     <TextView
-        android:id="@+id/text_boss_advent_message"
+        android:id="@+id/text_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WARNING!"
-        android:textColor="#FF0000"
         android:visibility="gone"
         android:layout_alignTop="@id/text_box"
         android:layout_centerHorizontal="true"
-        android:textSize="48sp"
+        android:textSize="40sp"
+        />
+
+    <TextView
+        android:id="@+id/text_boss_advent_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignTop="@id/text_box"
+        android:layout_centerHorizontal="true"
+        android:text="WARNING!"
+        android:textSize="40sp"
+        android:textColor="#FF0000"
         />
 
 </RelativeLayout>
