@@ -21,7 +21,7 @@ public class ResultActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        stageId = getIntent().getExtras().getInt(StageSelectFragment.STAGE_ID);
 
         //リトライ・終了ボタンのsetOnClickListener
         findViewById(R.id.button_retry).setOnClickListener(this);
@@ -90,10 +90,10 @@ public class ResultActivity extends Activity
         switch (view.getId()) {
             case R.id.button_retry:
                 intent = new Intent(this, BattleActivity.class)
-                        .putExtra(StageSelectActivity.STAGE_ID, stageId);
+                        .putExtra(StageSelectFragment.STAGE_ID, stageId);
                 break;
             case R.id.button_to_status:
-                intent = new Intent(this, StatusActivity.class);
+                intent = new Intent(this, StatusAndStageSelectActivity.class);
                 break;
         }
 

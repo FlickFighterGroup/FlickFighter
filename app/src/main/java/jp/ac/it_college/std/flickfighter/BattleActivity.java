@@ -108,7 +108,7 @@ public class BattleActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
 
-        stageId = getIntent().getExtras().getInt(StageSelectActivity.STAGE_ID);
+        stageId = getIntent().getExtras().getInt(StageSelectFragment.STAGE_ID);
         SharedPreferences playerStatus = getSharedPreferences("status", MODE_PRIVATE);
         playerPow = playerStatus.getInt("attackLevel", 1);
         playerDefence = playerStatus.getInt("defenceLevel", 0);
@@ -301,7 +301,7 @@ public class BattleActivity extends Activity
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Intent intent = new Intent(getApplicationContext(), StageSelectActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), StatusAndStageSelectActivity.class);
                             startActivity(intent);
                             finish();
                         }
@@ -388,7 +388,7 @@ public class BattleActivity extends Activity
     public void goToResult(boolean clear) {
         Intent intent = new Intent(this, ResultActivity.class)
                 .putExtra(PREF_CLEAR_JUDGE, clear)
-                .putExtra(StageSelectActivity.STAGE_ID, stageId)
+                .putExtra(StageSelectFragment.STAGE_ID, stageId)
                 .putExtra(PREF_CLEAR_TIME, currentTime)
                 .putExtra(PREF_NO_DAMAGE, no_damage)
                 .putExtra(PREF_RARE_CRUSHING, rareFrag);

@@ -50,7 +50,7 @@ public class TitleActivity extends Activity {
     }
 
     public void startClicked(View v) {
-        Intent intent = new Intent(this, StatusActivity.class);
+        Intent intent = new Intent(this, StatusAndStageSelectActivity.class);
         startActivity(intent);
         finish();
     }
